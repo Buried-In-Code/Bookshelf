@@ -1,4 +1,4 @@
-@import github.buriedincode.bookshelf.models.Role
+@import github.buriedincode.models.Role
 @param entry: Role
 
 <a class="card" href="/roles/${entry.id.value}">

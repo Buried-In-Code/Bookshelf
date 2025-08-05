@@ -1,8 +1,8 @@
-@import github.buriedincode.bookshelf.models.Creator
-@import github.buriedincode.bookshelf.models.Format
-@import github.buriedincode.bookshelf.models.Publisher
-@import github.buriedincode.bookshelf.models.Role
-@import github.buriedincode.bookshelf.models.Series
+@import github.buriedincode.models.Creator
+@import github.buriedincode.models.Format
+@import github.buriedincode.models.Publisher
+@import github.buriedincode.models.Role
+@import github.buriedincode.models.Series
 @import kotlin.collections.List
 @param creators: List<Creator>
 @param creatorSelected: Creator? = null

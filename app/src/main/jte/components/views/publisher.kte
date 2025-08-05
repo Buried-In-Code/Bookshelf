@@ -1,4 +1,4 @@
-@import github.buriedincode.bookshelf.models.Publisher
+@import github.buriedincode.models.Publisher
 @param entry: Publisher
 
 <a class="card" href="/publishers/${entry.id.value}">

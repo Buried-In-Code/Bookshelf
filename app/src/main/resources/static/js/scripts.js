@@ -38,7 +38,7 @@ function resetForm(page) {
 
 function setTheme() {
   const theme = getCookie("bookshelf_theme");
-  document.documentElement.setAttribute("data-theme", theme === "dark" ? "villain" : "hero");
+  document.documentElement.setAttribute("data-theme", theme === "dark" ? "dark" : "light");
 }
 
 function toggleTheme() {

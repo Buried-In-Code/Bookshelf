@@ -1,5 +1,5 @@
+@import github.buriedincode.models.Book
 @import kotlin.collections.List
-@import github.buriedincode.bookshelf.models.Book
 @param label: String = "Book"
 @param name: String = "book-id"
 @param options: List<Book>

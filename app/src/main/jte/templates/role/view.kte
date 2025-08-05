@@ -1,7 +1,7 @@
-@import github.buriedincode.bookshelf.models.Book
-@import github.buriedincode.bookshelf.models.Creator
-@import github.buriedincode.bookshelf.models.Role
-@import github.buriedincode.bookshelf.models.User
+@import github.buriedincode.models.Book
+@import github.buriedincode.models.Creator
+@import github.buriedincode.models.Role
+@import github.buriedincode.models.User
 @import kotlin.collections.List
 @import kotlin.collections.Map
 @param resource: Role
@@ -9,14 +9,13 @@
 @param credits: Map<Creator, List<Book>>
 
 <!DOCTYPE html>
-<html lang="en-GB" data-theme="villain">
+<html lang="en-GB" data-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <title>Bookshelf</title>
-    <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/gh/Buried-In-Code/Vegeta@0.2.0/css/vegeta.min.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v6.7.2/css/all.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" rel="stylesheet">
     <link href="/static/css/styles.css" rel="stylesheet">
     <link href="/static/img/favicon.ico" id="favicon" rel="icon" type="image/x-icon">
 </head>
