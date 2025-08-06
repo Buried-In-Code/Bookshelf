@@ -14,21 +14,21 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @OptIn(ExperimentalSerializationApi::class)
 object DescriptionSerializer : KSerializer<String?> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Description", PrimitiveKind.STRING)
+  override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Description", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): String? {
-        return when (val jsonElement = decoder.decodeSerializableValue(JsonElement.serializer())) {
-            is JsonObject -> jsonElement["value"]?.jsonPrimitive?.content
-            is JsonPrimitive -> jsonElement.content
-            else -> null
-        }
+  override fun deserialize(decoder: Decoder): String? {
+    return when (val jsonElement = decoder.decodeSerializableValue(JsonElement.serializer())) {
+      is JsonObject -> jsonElement["value"]?.jsonPrimitive?.content
+      is JsonPrimitive -> jsonElement.content
+      else -> null
     }
+  }
 
-    override fun serialize(encoder: Encoder, value: String?) {
-        if (value != null) {
-            encoder.encodeString(value)
-        } else {
-            encoder.encodeNull()
-        }
+  override fun serialize(encoder: Encoder, value: String?) {
+    if (value != null) {
+      encoder.encodeString(value)
+    } else {
+      encoder.encodeNull()
     }
+  }
 }

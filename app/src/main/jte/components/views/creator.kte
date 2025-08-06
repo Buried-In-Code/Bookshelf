@@ -1,4 +1,4 @@
-@import github.buriedincode.bookshelf.models.Creator
+@import github.buriedincode.models.Creator
 @param entry: Creator
 
 <a class="card" href="/creators/${entry.id.value}" style="width: 192px">

@@ -1,4 +1,4 @@
-@import github.buriedincode.bookshelf.models.Series
+@import github.buriedincode.models.Series
 @param entry: Series
 
 <a class="card" href="/series/${entry.id.value}">

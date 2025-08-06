@@ -1,4 +1,4 @@
-@import github.buriedincode.bookshelf.Utils.toString
+@import github.buriedincode.Utils.toString
 @import kotlinx.datetime.LocalDate
 @param label: String
 @param name: String
