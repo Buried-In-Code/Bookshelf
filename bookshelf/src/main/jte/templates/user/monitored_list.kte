@@ -1,0 +1,52 @@
+@import github.buriedincode.bookshelf.models.User
+@import github.buriedincode.bookshelf.models.Book
+@param session: User
+@param resource: User
+@param title: String
+@param results: List<Book> = emptyList()
+
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Bookshelf</title>
+    <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
+    <link href="/static/css/bulma-custom.css" rel="stylesheet">
+    <link href="/static/css/styles.css" rel="stylesheet">
+</head>
+<body class="has-navbar-fixed-top">
+    @template.components.navbar(session = session)
+    <main class="section">
+        <header class="block has-text-centered">
+            <h1 class="title is-1">${ title }</h1>
+        </header>
+        <div class="container">
+            <nav class="level">
+                <div class="level-left">
+                    <p class="has-text-centered">
+                        <span>${ results.size } Results</span>
+                    </p>
+                </div>
+            </nav>
+            <div class="columns is-multiline is-mobile">
+                @for(entry in results)
+                    <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
+                        @template.components.views.book(entry = entry, user = resource)
+                    </div>
+                @else
+                    <div class="column">
+                        <div class="box has-background-text-soft is-shadowless has-text-centered">
+                            <h5 class="title is-5 has-text-danger">No Books.</h5>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+    </main>
+    @template.components.footer()
+    <script src="/static/js/scripts.js" type="text/javascript"></script>
+    <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
+    <script src="/static/js/bulma-theme.js" type="text/javascript"></script>
+</body>
+</html>

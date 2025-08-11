@@ -10,6 +10,7 @@ import kotlinx.serialization.json.JsonNames
 @Serializable
 data class SearchResponse<T>(
   val docs: List<T> = listOf(),
+  @JsonNames("documentationUrl") val documentationUrl: String? = null,
   @JsonNames("numFound") val numFound: Int,
   @JsonNames("numFoundExact") val numFoundExact: Boolean,
   val offset: Int? = null,
@@ -47,7 +48,7 @@ data class SearchResponse<T>(
     val ddc: List<String> = emptyList(),
     val ddcSort: String? = null,
     val ebookAccess: String,
-    @JsonNames("ebook_count_i") val ebookCount: Long,
+    @JsonNames("ebook_count_i") val ebookCount: Long? = null,
     val editionCount: Int,
     val editionKey: List<String> = emptyList(),
     val firstPublishYear: Int? = null,
@@ -72,7 +73,7 @@ data class SearchResponse<T>(
     val isbn: List<String> = emptyList(),
     val key: String,
     val language: List<String> = emptyList(),
-    @JsonNames("last_modified_i") val lastModified: Long,
+    @JsonNames("last_modified_i") val lastModified: Long? = null,
     val lcc: List<String> = emptyList(),
     val lccn: List<String> = emptyList(),
     val lccSort: String? = null,
@@ -112,10 +113,10 @@ data class SearchResponse<T>(
     val timeFacet: List<String> = emptyList(),
     val timeKey: List<String> = emptyList(),
     val title: String,
-    val titleSort: String,
-    val titleSuggest: String,
-    val type: String,
-    @JsonNames("_version_") val version: Long,
+    val titleSort: String? = null,
+    val titleSuggest: String? = null,
+    val type: String? = null,
+    @JsonNames("_version_") val version: Long? = null,
     val wantToReadCount: Int? = null,
   )
 }

@@ -4,4 +4,4 @@ rootProject.name = "Bookshelf"
 
 include("openlibrary")
 
-include("app")
+include("bookshelf")

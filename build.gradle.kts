@@ -1,3 +1,4 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.benmanes.gradle.versions.updates.resolutionstrategy.ComponentSelectionWithCurrent
 
 plugins {
@@ -7,6 +8,7 @@ plugins {
   alias(libs.plugins.shadow) apply false
   alias(libs.plugins.spotless)
   alias(libs.plugins.versions)
+  id("com.github.node-gradle.node") version "7.1.0" apply false
 }
 
 println("Kotlin v${KotlinVersion.CURRENT}")
@@ -70,7 +72,7 @@ fun isNonStable(version: String): Boolean {
   return isStable.not()
 }
 
-tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+tasks.withType<DependencyUpdatesTask> {
   gradleReleaseChannel = "current"
   checkForGradleUpdate = true
   checkConstraints = false

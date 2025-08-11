@@ -5,6 +5,8 @@
 build/
 jte-classes/
 logs/
+node_modules/
 
 ### Files ###
 .envrc
+*.sqlite

@@ -37,6 +37,7 @@ class OpenLibrary(private val cache: SQLiteCache? = null, timeout: Duration = Du
   @Throws(ServiceException::class)
   private fun performGetRequest(uri: URI): String {
     try {
+      @Suppress("ktlint:standard:max-line-length", "ktlint:standard:argument-list-wrapping")
       val request =
         HttpRequest.newBuilder()
           .uri(uri)

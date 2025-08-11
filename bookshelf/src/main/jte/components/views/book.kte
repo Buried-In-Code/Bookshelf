@@ -1,0 +1,78 @@
+@import github.buriedincode.bookshelf.Utils.toHumanReadable
+@import github.buriedincode.bookshelf.models.Book
+@import github.buriedincode.bookshelf.models.User
+@import kotlin.time.Clock
+@import kotlin.time.ExperimentalTime
+@import kotlinx.datetime.LocalDate
+@import kotlinx.datetime.TimeZone
+@import kotlinx.datetime.toLocalDateTime
+@import kotlinx.datetime.DateTimeUnit
+@import kotlinx.datetime.plus
+@param entry: Book
+@param user: User
+@param date: LocalDate? = null
+
+!{ @OptIn(ExperimentalTime::class) val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date }
+!{ val releaseDate = entry.publishDate ?: today.plus(16, DateTimeUnit.DAY) }
+!{ val isWished = entry.wishers.any { it.user == user } }
+!{ val isCollected = entry.collectors.any { it.user == user } }
+!{ val isRead = entry.readers.any { it.user == user } }
+
+<a class="card has-background-text-soft" href="/books/${ entry.id.value }">
+    <div class="card-image has-background-text-soft">
+        <figure class="image is-2by3">
+          @if(isCollected)
+              <img alt="Cover image" loading="lazy" src="${entry.imageUrl ?: "https://placehold.co/320x480.png"}"/>
+          @else
+              <img alt="Cover image" class="greyscale" loading="lazy" src="${entry.imageUrl ?: "https://placehold.co/320x480.png"}"/>
+          @endif
+          @if(date != null)
+              <span class="tag is-info" style="position: absolute; left: 0; top: 0;">
+                  <span class="icon">
+                      <i class="fa-solid fa-bookmark"></i>
+                  </span>
+                  <span>${ date.toHumanReadable() }</span>
+              </span>
+          @endif
+        </figure>
+    </div>
+    <div class="card-content has-background-text-soft">
+        <div class="media">
+            <div class="media-content">
+                <p class="title is-6">${ entry.title }</p>
+                <p class="subtitle is-6">${ entry.subtitle }</p>
+            </div>
+        </div>
+    </div>
+    <footer class="card-footer has-background-text-soft">
+        <button class="card-footer-item@if(isWished) has-text-success@endif" id="wish-${ entry.id.value }-button" onclick="toggleWished(event, ${ entry.id.value })">
+            <span class="icon">
+                @if(isWished)
+                    <i class="fa-solid fa-star"></i>
+                @else
+                    <i class="fa-regular fa-star"></i>
+                @endif
+            </span>
+        </button>
+        @if(releaseDate <= today)
+            <button class="card-footer-item@if(isCollected) has-text-success@endif" id="collect-${ entry.id.value }-button" onclick="toggleCollected(event, ${ entry.id.value })">
+                <span class="icon">
+                    @if(isCollected)
+                        <i class="fa-solid fa-box"></i>
+                    @else
+                        <i class="fa-solid fa-box-open"></i>
+                    @endif
+                </span>
+            </button>
+            <button class="card-footer-item@if(isRead) has-text-success@endif" id="read-${ entry.id.value }-button" onclick="toggleRead(event, ${ entry.id.value })">
+                <span class="icon">
+                    @if(isRead)
+                        <i class="fa-solid fa-bookmark"></i>
+                    @else
+                        <i class="fa-regular fa-bookmark"></i>
+                    @endif
+                </span>
+            </button>
+        @endif
+    </footer>
+</a>

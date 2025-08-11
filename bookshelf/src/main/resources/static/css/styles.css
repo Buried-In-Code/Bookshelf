@@ -1,0 +1,38 @@
+html, body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body > footer {
+  margin-top: auto;
+}
+
+.avatar {
+  object-fit: cover;
+  object-position: top;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.cover {
+  object-fit: cover;
+  object-position: center;
+  width: 320px;
+  height: 480px;
+  border-radius: 8px;
+}
+
+.cover-small {
+  object-fit: cover;
+  object-position: center;
+  width: 160px;
+  height: 240px;
+  border-radius: 8px;
+}
+
+.greyscale {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
