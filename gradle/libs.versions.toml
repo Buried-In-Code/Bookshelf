@@ -3,13 +3,13 @@ exposed = "0.61.0"
 jackson = "2.19.2"
 javalin = "6.7.0"
 jte = "3.2.1"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 
 [plugins]
 jte = { id = "gg.jte.gradle", version.ref = "jte" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-shadow = { id = "com.gradleup.shadow", version = "8.3.8" }
+shadow = { id = "com.gradleup.shadow", version = "9.0.2" }
 spotless = { id = "com.diffplug.spotless", version = "7.2.1" }
 versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
 
@@ -29,8 +29,8 @@ jte-core = { group = "gg.jte", name = "jte", version.ref = "jte" }
 jte-kotlin = { group = "gg.jte", name = "jte-kotlin", version.ref = "jte" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version = "5.13.4" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.13.4" }
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.11" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.7.1" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.13" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.7.1-0.6.x-compat" }
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.9.0" }
 log4j2-slf4j2 = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version = "2.25.1" }
 sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version = "3.50.3.0" }
