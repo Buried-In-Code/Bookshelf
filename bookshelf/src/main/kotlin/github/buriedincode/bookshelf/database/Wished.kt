@@ -1,4 +1,4 @@
-package github.buriedincode.bookshelf.models
+package github.buriedincode.bookshelf.database
 
 import github.buriedincode.bookshelf.Utils.transaction
 import kotlinx.datetime.LocalDate

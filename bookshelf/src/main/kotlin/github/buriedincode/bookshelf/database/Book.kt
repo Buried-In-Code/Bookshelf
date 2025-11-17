@@ -1,4 +1,4 @@
-package github.buriedincode.bookshelf.models
+package github.buriedincode.bookshelf.database
 
 import github.buriedincode.bookshelf.Utils
 import github.buriedincode.bookshelf.Utils.toString
@@ -61,6 +61,7 @@ class Book(id: EntityID<String>) : Entity<String>(id), IJson, Comparable<Book> {
   var imageUrl: String by BookTable.imageUrlCol
   var isbn10: String? by BookTable.isbn10Col
   var isbn13: String? by BookTable.isbn13Col
+  var isCollected: Boolean by BookTable.isCollectedCol
   var lastUpdated: Instant by BookTable.lastUpdatedCol
   var libraryThingId: String? by BookTable.libraryThingIdCol
   var publishDate: LocalDate? by BookTable.publishDateCol
@@ -72,7 +73,6 @@ class Book(id: EntityID<String>) : Entity<String>(id), IJson, Comparable<Book> {
   // var credits by Credit referrersOn CreditTable.bookCol
   // val series by BookSeries referrersOn BookSeriesTable.bookCol
 
-  val collectors by Collected referrersOn CollectedTable.bookCol
   val readers by Read referrersOn ReadTable.bookCol
   val wishers by Wished referrersOn WishedTable.bookCol
 
@@ -108,6 +108,7 @@ class Book(id: EntityID<String>) : Entity<String>(id), IJson, Comparable<Book> {
         "imageUrl" to imageUrl,
         "isbn10" to isbn10,
         "isbn13" to isbn13,
+        "isCollected" to isCollected,
         "lastUpdated" to lastUpdated.toString(),
         "libraryThingId" to libraryThingId,
         "publishDate" to publishDate?.toString(),
@@ -118,7 +119,6 @@ class Book(id: EntityID<String>) : Entity<String>(id), IJson, Comparable<Book> {
       .apply {
         if (showAll) {
           put("summary", summary)
-          put("collectors", collectors.sortedWith(compareBy(Collected::date, Collected::user)).map { it.user.id.value })
           put("readers", readers.sortedWith(compareBy(Read::date, Read::user)).map { it.user.id.value })
           put("wishers", wishers.sortedWith(compareBy(Wished::date, Wished::user)).map { it.user.id.value })
         }
@@ -140,6 +140,7 @@ object BookTable : IdTable<String>(name = "books") {
   val imageUrlCol: Column<String> = text(name = "image_url")
   val isbn10Col: Column<String?> = text(name = "isbn_10").nullable().uniqueIndex()
   val isbn13Col: Column<String?> = text(name = "isbn_13").nullable().uniqueIndex()
+  val isCollectedCol: Column<Boolean> = bool(name = "is_collected").default(false)
   val lastUpdatedCol: Column<Instant> =
     timestamp(name = "last_updated").clientDefault { Clock.System.now().minus(25, DateTimeUnit.HOUR) }
   val libraryThingIdCol: Column<String?> = text(name = "library_thing_id").nullable().uniqueIndex()

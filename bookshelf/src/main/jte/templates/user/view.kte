@@ -1,121 +1,184 @@
-@import github.buriedincode.bookshelf.models.User
-@import github.buriedincode.bookshelf.models.Read
+@import github.buriedincode.bookshelf.database.Read
+@import github.buriedincode.bookshelf.database.User
 @param session: User
 @param resource: User
 
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>Bookshelf</title>
-    <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
-    <link href="/static/css/bulma-custom.css" rel="stylesheet">
-    <link href="/static/css/styles.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Bookshelf</title>
+  <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
+  <link href="/static/css/bulma-custom.css" rel="stylesheet">
+  <link href="/static/css/styles.css" rel="stylesheet">
 </head>
 <body class="has-navbar-fixed-top">
-    @template.components.navbar(session = session)
-    <main class="section">
-        <header class="block has-text-centered">
-            <h1 class="title is-1">Dashboard</h1>
-        </header>
-        <div class="container">
-            <div class="box has-background-text-soft is-shadowless">
-                <nav class="level is-mobile">
-                    <div class="level-item has-text-centered">
-                        <div>
-                            <p class="title">Wished</p>
-                            <p class="heading">${ resource.wished.count() }</p>
-                        </div>
-                    </div>
-                    <div class="level-item has-text-centered">
-                        <div>
-                            <p class="title">Collected</p>
-                            <p class="heading">${ resource.collected.count() }</p>
-                        </div>
-                    </div>
-                    <div class="level-item has-text-centered">
-                        <div>
-                            <p class="title">Read</p>
-                            <p class="heading">${ resource.read.count() }</p>
-                        </div>
-                    </div>
-                </nav>
+  @template.components.navbar(session = session)
+  <main class="section">
+    <header class="block has-text-centered">
+      <h1 class="title is-1">${ resource.username }</h1>
+    </header>
+    <div class="container">
+      <div class="tabs is-boxed">
+        <ul>
+          <li class="is-active"><a href="#overview">Overview</a></li>
+          <li><a href="#wish-list">Wish List</a></li>
+          <li><a href="#collection">Collection</a></li>
+          <li><a href="#read-list">Read List</a></li>
+        </ul>
+      </div>
+      <div id="overview" class="tab-content">
+        <div class="box has-background-text-soft">
+          <nav class="level is-mobile">
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="title">Wished</p>
+                <p class="heading">${ resource.wished.count() }</p>
+              </div>
             </div>
-            <div class="box has-background-inherit is-shadowless">
-                <p class="title">Series Progress Tracker</p>
-                <div class="columns is-mobile is-flex-wrap-nowrap" style="overflow: auto;">
-                    <div class="column">
-                        <p class="subtitle">No Series started</p>
-                    </div>
-                </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="title">Collected</p>
+                <p class="heading">${ resource.collected.count() }</p>
+              </div>
             </div>
-            <div class="box has-background-inherit is-shadowless">
-                <p class="title">Reading Log</p>
-                <div class="columns is-mobile is-flex-wrap-nowrap" style="overflow: auto;">
-                    @for(entry in resource.read.sortedBy(Read::date).reversed())
-                        <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
-                            @template.components.views.book(entry.book, user=resource, date=entry.date)
-                        </div>
-                    @else
-                        <div class="column">
-                            <p class="subtitle">No Books read</p>
-                        </div>
-                    @endfor
-                </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="title">Read</p>
+                <p class="heading">${ resource.read.count() }</p>
+              </div>
             </div>
+          </nav>
         </div>
-    </main>
-    @template.components.footer()
-    <script src="/static/js/scripts.js" type="text/javascript"></script>
-    <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
-    <script src="/static/js/bulma-theme.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        async function toggleWished(event, bookId) {
-            event.stopPropagation();
-            event.preventDefault();
-            @raw
-                const caller = `wish-${ bookId }-button`;
-            @endraw
+        <div class="columns is-multiline is-mobile">
+          <div class="column">
+            <p class="subtitle has-text-warning">Up-Next not yet implemented</p>
+          </div>
+        </div>
+      </div>
+      <div id="wish-list" class="tab-content is-hidden">
+        <nav class="level">
+          <div class="level-left">
+            <p class="has-text-centered">
+              <span>${ resource.wished.count() } Results</span>
+            </p>
+          </div>
+        </nav>
+        <div class="columns is-multiline is-mobile">
+          @for(entry in resource.wished.sortedBy { it.book })
+            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
+              @template.components.views.book(entry = entry.book, user = resource)
+            </div>
+          @else
+            <div class="column">
+              <div class="box has-background-text-soft is-shadowless has-text-centered">
+                <h5 class="title is-5 has-text-danger">No Books.</h5>
+              </div>
+            </div>
+          @endfor
+        </div>
+      </div>
+      <div id="collection" class="tab-content is-hidden">
+        <nav class="level">
+          <div class="level-left">
+            <p class="has-text-centered">
+              <span>${ resource.collected.count() } Results</span>
+            </p>
+          </div>
+        </nav>
+        <div class="columns is-multiline is-mobile">
+          @for(entry in resource.collected.sorted())
+            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
+              @template.components.views.book(entry = entry, user = resource)
+            </div>
+          @else
+            <div class="column">
+              <div class="box has-background-text-soft is-shadowless has-text-centered">
+                <h5 class="title is-5 has-text-danger">No Books.</h5>
+              </div>
+            </div>
+          @endfor
+        </div>
+      </div>
+      <div id="read-list" class="tab-content is-hidden">
+        <nav class="level">
+          <div class="level-left">
+            <p class="has-text-centered">
+              <span>${ resource.read.count() } Results</span>
+            </p>
+          </div>
+        </nav>
+        <div class="columns is-multiline is-mobile">
+          @for(entry in resource.read.sortedBy { it.date }.reversed())
+            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
+              @template.components.views.book(entry = entry.book, user = resource, date = entry.date)
+            </div>
+          @else
+            <div class="column">
+              <div class="box has-background-text-soft is-shadowless has-text-centered">
+                <h5 class="title is-5 has-text-danger">No Books.</h5>
+              </div>
+            </div>
+          @endfor
+        </div>
+      </div>
+    </div>
+  </main>
+  @template.components.footer()
+  <script src="/static/js/scripts.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-tabs.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-theme.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    async function toggleWished(event, bookId) {
+      event.stopPropagation();
+      event.preventDefault();
+      @raw
+        const caller = `wish-${ bookId }-button`;
+      @endraw
 
-            addLoading(caller);
-            @raw
-                const response = await submitRequest(`/api/books/${ bookId }/wish`, "POST");
-            @endraw
-            if (response !== null)
-                window.location.reload();
-            removeLoading(caller);
-        }
-        async function toggleCollected(event, bookId) {
-            event.stopPropagation();
-            event.preventDefault();
-            @raw
-                const caller = `collect-${ bookId }-button`;
-            @endraw
+      addLoading(caller);
+      @raw
+        const response = await submitRequest(`/api/books/${ bookId }/wish`, "POST");
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleCollected(event, bookId) {
+      event.stopPropagation();
+      event.preventDefault();
+      @raw
+        const caller = `collect-${ bookId }-button`;
+      @endraw
 
-            addLoading(caller);
-            @raw
-                const response = await submitRequest(`/api/books/${ bookId }/collect`, "POST");
-            @endraw
-            if (response !== null)
-                window.location.reload();
-            removeLoading(caller);
-        }
-        async function toggleRead(event, bookId) {
-            event.stopPropagation();
-            event.preventDefault();
-            @raw
-                const caller = `read-${ bookId }-button`;
-            @endraw
+      addLoading(caller);
+      @raw
+        const response = await submitRequest(`/api/books/${ bookId }/collect`, "POST");
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleRead(event, bookId) {
+      event.stopPropagation();
+      event.preventDefault();
+      @raw
+        const caller = `read-${ bookId }-button`;
+      @endraw
 
-            addLoading(caller);
-            @raw
-                const response = await submitRequest(`/api/books/${ bookId }/read`, "POST");
-            @endraw
-            if (response !== null)
-                window.location.reload();
-            removeLoading(caller);
-        }
-    </script>
+      addLoading(caller);
+      @raw
+        const response = await submitRequest(`/api/books/${ bookId }/read`, "POST");
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+  </script>
 </body>
 </html>

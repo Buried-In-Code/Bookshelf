@@ -34,23 +34,22 @@ object Utils {
 
   private val USER_HOME: Path by lazy { Paths.get(System.getProperty("user.home")) }
   private val XDG_CACHE_HOME: Path by lazy {
-    System.getenv("XDG_CACHE_HOME")?.let { Paths.get(it) } ?: (USER_HOME / ".cache")
+    System.getenv("XDG_CACHE_HOME")?.let { Paths.get(it) } ?: (this.USER_HOME / ".cache")
   }
   private val XDG_CONFIG_HOME: Path by lazy {
-    System.getenv("XDG_CONFIG_HOME")?.let { Paths.get(it) } ?: (USER_HOME / ".config")
+    System.getenv("XDG_CONFIG_HOME")?.let { Paths.get(it) } ?: (this.USER_HOME / ".config")
   }
   private val XDG_DATA_HOME: Path by lazy {
-    System.getenv("XDG_DATA_HOME")?.let { Paths.get(it) } ?: (USER_HOME / ".local" / "share")
+    System.getenv("XDG_DATA_HOME")?.let { Paths.get(it) } ?: (this.USER_HOME / ".local" / "share")
   }
 
-  internal val CACHE_ROOT by lazy { XDG_CACHE_HOME / PROJECT_NAME.lowercase() }
-  internal val CONFIG_ROOT by lazy { XDG_CONFIG_HOME / PROJECT_NAME.lowercase() }
-  internal val DATA_ROOT by lazy { XDG_DATA_HOME / PROJECT_NAME.lowercase() }
+  internal val CACHE_ROOT by lazy { this.XDG_CACHE_HOME / PROJECT_NAME.lowercase() }
+  internal val CONFIG_ROOT by lazy { this.XDG_CONFIG_HOME / PROJECT_NAME.lowercase() }
+  internal val DATA_ROOT by lazy { this.XDG_DATA_HOME / PROJECT_NAME.lowercase() }
 
   private val DATABASE: Database by lazy {
-    val settings = Settings.load()
     Database.connect(
-      url = "jdbc:sqlite:${settings.database.url}",
+      url = "jdbc:sqlite:${this.DATA_ROOT / "${PROJECT_NAME.lowercase()}.sqlite"}",
       driver = "org.sqlite.JDBC",
       databaseConfig =
         DatabaseConfig {
@@ -61,12 +60,11 @@ object Utils {
   }
 
   val openLibrary: OpenLibrary by lazy {
-    val settings = Settings.load()
-    OpenLibrary(cache = SQLiteCache(path = CACHE_ROOT / "openlibrary.sqlite", expiry = 1))
+    OpenLibrary(cache = SQLiteCache(path = this.CACHE_ROOT / "openlibrary.sqlite", expiry = 1))
   }
 
   init {
-    listOf(CACHE_ROOT, CONFIG_ROOT, DATA_ROOT).forEach { if (!it.exists()) it.createDirectories() }
+    listOf(this.CACHE_ROOT, this.CONFIG_ROOT, this.DATA_ROOT).forEach { if (!it.exists()) it.createDirectories() }
   }
 
   private fun getDayNumberSuffix(day: Int): String {
@@ -112,7 +110,7 @@ object Utils {
 
   fun <T> transaction(block: () -> T): T {
     val result = measureTimedValue {
-      transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, db = DATABASE) {
+      transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, db = this.DATABASE) {
         addLogger(Slf4jSqlDebugLogger)
         block()
       }

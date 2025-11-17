@@ -1,47 +1,41 @@
-@import github.buriedincode.bookshelf.models.User
+@import github.buriedincode.bookshelf.database.User
 @param session: User
 
 <nav class="navbar is-primary is-fixed-top" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <img src="/static/img/logo.png" alt="Bookshelf Logo">
-            Bookshelf
-        </a>
-        <span class="navbar-burger burger has-text-primary-invert" data-target="navMenu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </span>
-    </div>
-    <div class="navbar-menu" id="navMenu">
-        <div class="navbar-start">
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">Profile</a>
-                <div class="navbar-dropdown">
-                    <a class="navbar-item" href="/users/${session.id.value}">Dashboard</a>
-                    <a class="navbar-item" href="/users/${session.id.value}/wish-list">Wish List</a>
-                    <a class="navbar-item" href="/users/${session.id.value}/collection">Collection</a>
-                    <a class="navbar-item" href="/users/${session.id.value}/read-list">Read List</a>
-                </div>
-            </div>
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link">Browse</a>
-                <div class="navbar-dropdown">
-                    <a class="navbar-item" href="/books">Books</a>
-                </div>
-            </div>
+  <div class="navbar-brand">
+    <a class="navbar-item" href="/">
+      <img src="/static/img/logo.png" alt="Bookshelf Logo">
+      Bookshelf
+    </a>
+    <span class="navbar-burger burger has-text-primary-invert" data-target="navMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </div>
+  <div class="navbar-menu" id="navMenu">
+    <div class="navbar-start">
+      <a class="navbar-item" href="/users/${ session.id.value }">Profile</a>
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">Browse</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="/books">Search</a>
+          <a class="navbar-item" href="/series">Series</a>
+          <a class="navbar-item" href="/users">Users</a>
         </div>
-        <div class="navbar-end">
-            <div class="navbar-item">
-                <div class="buttons is-centered">
-                    <button class="button is-warning">
-                        <span class="icon">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                        </span>
-                        <span>Sign Out</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons is-centered">
+          <button class="button is-warning" onclick="signOut()">
+            <span class="icon">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </nav>

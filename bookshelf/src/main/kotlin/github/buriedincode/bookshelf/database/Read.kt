@@ -1,4 +1,4 @@
-package github.buriedincode.bookshelf.models
+package github.buriedincode.bookshelf.database
 
 import github.buriedincode.bookshelf.Utils.transaction
 import kotlinx.datetime.LocalDate
@@ -12,19 +12,19 @@ import org.jetbrains.exposed.v1.dao.CompositeEntityClass
 import org.jetbrains.exposed.v1.datetime.date
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 
-class Collected(id: EntityID<CompositeID>) : CompositeEntity(id) {
-  companion object : CompositeEntityClass<Collected>(CollectedTable)
+class Read(id: EntityID<CompositeID>) : CompositeEntity(id) {
+  companion object : CompositeEntityClass<Read>(ReadTable)
 
-  var date: LocalDate? by CollectedTable.dateCol
+  var date: LocalDate? by ReadTable.dateCol
 
   val book: Book
-    get() = Book[this.id.value.get(CollectedTable.bookCol)]
+    get() = Book[this.id.value.get(ReadTable.bookCol)]
 
   val user: User
-    get() = User[this.id.value.get(CollectedTable.userCol)]
+    get() = User[this.id.value.get(ReadTable.userCol)]
 }
 
-object CollectedTable : CompositeIdTable(name = "collected_books") {
+object ReadTable : CompositeIdTable(name = "read_books") {
   val bookCol: Column<EntityID<String>> =
     reference(
       name = "book_id",

@@ -1,30 +1,48 @@
 package github.buriedincode.bookshelf.controllers
 
 import github.buriedincode.bookshelf.Utils.transaction
-import github.buriedincode.bookshelf.models.Book
-import github.buriedincode.bookshelf.models.User
+import github.buriedincode.bookshelf.controllers.AuthenticationController.getSession
+import github.buriedincode.bookshelf.database.User
+import github.buriedincode.bookshelf.database.UserTable
+import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
+import io.javalin.http.NotFoundResponse
+import org.jetbrains.exposed.v1.core.like
 
-object UserController : LongController<User>(entity = User) {
-  @JvmStatic private val LOGGER = KotlinLogging.logger {}
+object UserController {
+  @JvmStatic private val LOGGER: KLogger = KotlinLogging.logger {}
 
-  private fun monitoredListPage(ctx: Context, title: String, results: (resource: User) -> List<Book>) = transaction {
+  private fun Context.getResource(): User {
+    return this.pathParam("user-id").toLongOrNull()?.let {
+      User.findById(id = it) ?: throw NotFoundResponse("User not found.")
+    } ?: throw BadRequestResponse("Bad User id")
+  }
+
+  private fun render(ctx: Context, template: String, model: Map<String, Any?> = emptyMap()) {
     val session = ctx.getSession()
     if (session == null) {
       ctx.redirect("/")
-      return@transaction
+    } else {
+      ctx.render("templates/user/$template.kte", mapOf<String, Any?>("session" to session) + model)
     }
-    val resource = ctx.getResource()
-    renderResource(ctx, "monitored_list", mapOf("title" to title, "results" to results(resource)))
   }
 
-  fun collectionPage(ctx: Context) =
-    monitoredListPage(ctx = ctx, title = "Collection") { it.collected.map { it.book }.distinct() }
+  fun listUsersPage(ctx: Context) = transaction {
+    val query = ctx.queryParam("q")
+    if (query.isNullOrBlank()) {
+      render(ctx = ctx, template = "list", model = mapOf<String, Any?>("results" to User.all().toList()))
+    } else {
+      render(
+        ctx = ctx,
+        template = "list",
+        model = mapOf<String, Any?>("results" to User.find { UserTable.usernameCol like "%$query%" }.toList()),
+      )
+    }
+  }
 
-  fun readListPage(ctx: Context) =
-    monitoredListPage(ctx = ctx, title = "Read List") { it.read.map { it.book }.distinct() }
-
-  fun wishListPage(ctx: Context) =
-    monitoredListPage(ctx = ctx, title = "Wish List") { it.wished.map { it.book }.distinct() }
+  fun viewUserPage(ctx: Context) = transaction {
+    render(ctx = ctx, template = "view", model = mapOf<String, Any?>("resource" to ctx.getResource()))
+  }
 }

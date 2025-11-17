@@ -1,9 +1,7 @@
-@import github.buriedincode.bookshelf.controllers.BookResult
 @import github.buriedincode.bookshelf.database.User
-@import github.buriedincode.openlibrary.schemas.id
 @param session: User
 @param query: String? = null
-@param results: List<BookResult> = emptyList()
+@param results: List<User> = emptyList()
 
 <!DOCTYPE html>
 <html lang="en-GB">
@@ -19,13 +17,13 @@
   @template.components.navbar(session = session)
   <main class="section">
     <header class="block has-text-centered">
-      <h1 class="title is-1">Books</h1>
+      <h1 class="title is-1">Users</h1>
     </header>
     <div class="container">
-      <nav class="level">
+      <nav class="level is-mobile">
         <div class="level-left">
           <p class="has-text-centered">
-            <span>${ results.size } Results</span>
+            <span>${ results.size } Users</span>
           </p>
         </div>
         <div class="level-right">
@@ -48,37 +46,20 @@
       </nav>
       <div class="columns is-multiline is-mobile">
         @for(entry in results)
-          !{ val isCollected = session.collected.any { it.id.value == entry.edition.id } }
-          !{ val isWished = session.wished.any { it.book.id.value == entry.edition.id } }
-          <div class="column is-half-mobile is-one-third-desktop is-one-quarter-fullhd has-text-centered">
-            <a class="card has-background-text-soft" href="/books/${ entry.edition.id }">
-              <div class="card-image has-background-text-soft">
-                <figure class="image is-2by3">
-                  <img alt="Cover image" class="cover@if(!isCollected) greyscale@endif" loading="lazy" src="https://covers.openlibrary.org/b/OLID/${ entry.edition.id }-L.jpg"/>
-                  @if(isWished)
-                    <span class="tag is-info" style="position: absolute; left: 0; top: 0;">
-                      <span class="icon">
-                        <i class="fa-solid fa-star"></i>
-                      </span>
-                      <span>Wished</span>
-                    </span>
-                  @endif
-                </figure>
-              </div>
-              <div class="card-content has-background-text-soft">
-                <div class="media">
-                  <div class="media-content">
-                    <p class="title is-6">${ entry.edition.title }</p>
-                    <p class="subtitle is-6">${ entry.edition.subtitle }</p>
-                  </div>
+          <div class="column is-half-mobile is-one-quarter-desktop is-one-fifth-fullhd">
+            <a class="box has-background-text-soft has-text-centered" href="/users/${ entry.id.value }">
+              <img loading="lazy" class="avatar-large" src="${ entry.imageUrl ?: "https://placehold.co/256x256.png" }"/>
+              <div class="media">
+                <div class="media-content">
+                  <p class="title is-6">${ entry.username }</p>
                 </div>
               </div>
             </a>
           </div>
         @else
           <div class="column">
-            <div class="box has-background-text-soft is-shadowless has-text-centered">
-              <h5 class="title is-5 has-text-danger">No Books found.</h5>
+            <div class="box has-background-text-soft has-text-centered">
+              <h5 class="title is-5 has-text-danger">No Users found.</h5>
             </div>
           </div>
         @endfor

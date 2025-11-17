@@ -6,9 +6,7 @@ import com.sksamuel.hoplite.addPathSource
 import com.sksamuel.hoplite.addResourceSource
 import kotlin.io.path.div
 
-data class Settings(val database: Database, val environment: Environment, val website: Website) {
-  data class Database(val url: String)
-
+data class Settings(val environment: Environment, val website: Website) {
   enum class Environment {
     DEV,
     PROD,

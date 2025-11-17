@@ -12,10 +12,13 @@ dependencies {
   implementation(libs.bundles.javalin)
   implementation(libs.bundles.jte)
   implementation(libs.hoplite.core)
+  implementation("org.springframework.security:spring-security-crypto:6.5.4")
+
+  runtimeOnly("org.bouncycastle:bcprov-jdk18on:1.81")
 }
 
 application {
-  mainClass = "github.buriedincode.bookshelf.AppKt"
+  mainClass = "github.buriedincode.bookshelf.ServerKt"
   applicationName = "Bookshelf"
 }
 
@@ -34,7 +37,7 @@ tasks.jar {
       include("**/*.bin") // Only required if you use binary templates
     }
   )
-  manifest.attributes["Main-Class"] = "github.buriedincode.bookshelf.AppKt"
+  manifest.attributes["Main-Class"] = "github.buriedincode.bookshelf.ServerKt"
 }
 
 tasks.shadowJar {
@@ -45,13 +48,13 @@ tasks.shadowJar {
       include("**/*.bin") // Only required if you use binary templates
     }
   )
-  manifest.attributes["Main-Class"] = "github.buriedincode.bookshelf.AppKt"
+  manifest.attributes["Main-Class"] = "github.buriedincode.bookshelf.ServerKt"
   mergeServiceFiles()
 }
 
 node {
   download = false
-  version = "22.18.0"
+  version = "22.19.0"
 }
 
 val npmInstall by tasks.getting(com.github.gradle.node.npm.task.NpmTask::class)

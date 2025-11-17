@@ -6,14 +6,14 @@
 @param disabled: Boolean = false
 
 <div class="field">
-    <label class="label has-text-info-bold" for="${ id }">${ label }</label>
-    <div class="control is-expanded@if(icon != null) has-icons-left@endif">
-        <input class="input" disabled="${ disabled }" id="${ id }" name="${ id }" placeholder="${ label }" type="${ type }" value="${ value }">
-        @if(icon != null)
-            <div class="icon is-left">
-                <i class="${ icon }"></i>
-            </div>
-        @endif
-    </div>
-    <p class="help is-danger" id="${ id }-error"></p>
+  <label class="label has-text-info-bold" for="${ id }">${ label }</label>
+  <div class="control is-expanded@if(icon != null) has-icons-left@endif">
+    <input class="input" disabled="${ disabled }" id="${ id }" name="${ id }" placeholder="${ label }" type="${ type }" value="${ value }">
+    @if(icon != null)
+      <div class="icon is-left">
+        <i class="${ icon }"></i>
+      </div>
+    @endif
+  </div>
+  <p class="help is-danger" id="${ id }-error"></p>
 </div>

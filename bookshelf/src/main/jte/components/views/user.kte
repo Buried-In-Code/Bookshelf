@@ -1,19 +1,17 @@
 @import github.buriedincode.bookshelf.Utils.toHumanReadable
-@import github.buriedincode.bookshelf.models.User
+@import github.buriedincode.bookshelf.database.User
 @import kotlinx.datetime.LocalDate
 @param entry: User
 @param date: LocalDate? = null
 
-<a class="card has-background-text-soft" href="/users/${ entry.id.value }">
-    <div class="media">
-        <div class="media-left">
-            <img loading="lazy" class="avatar" src="${ entry.imageUrl ?: "https://placehold.co/128x128.png" }"/>
-        </div>
-        <div class="media-content">
-            <p class="title is-6">${ entry.username }</p>
-            @if(date != null)
-                <p class="subtitle is-6"><time datetime="${ date.toString() }">${ date.toHumanReadable() }</time></p>
-            @endif
-        </div>
+<a class="box has-background-text-soft has-text-centered" href="/users/${ entry.id.value }">
+  <img loading="lazy" class="avatar-large" src="${ entry.imageUrl ?: "https://placehold.co/256x256.png" }"/>
+  <div class="media">
+    <div class="media-content">
+      <p class="title is-6">${ entry.username }</p>
+      @if(date != null)
+        <p class="subtitle is-6"><time datetime="${ date.toString() }">${ date.toHumanReadable() }</time></p>
+      @endif
     </div>
+  </div>
 </a>

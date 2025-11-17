@@ -2,7 +2,7 @@
 
 # Bookshelf
 
-![Java Version](https://img.shields.io/badge/Temurin-20-green?style=flat-square&logo=eclipse-adoptium)
+![Java Version](https://img.shields.io/badge/Temurin-21-green?style=flat-square&logo=eclipse-adoptium)
 ![Kotlin Version](https://img.shields.io/badge/Kotlin-2.2.0-green?style=flat-square&logo=kotlin)
 ![Status](https://img.shields.io/badge/Status-Beta-yellowgreen?style=flat-square)
 

@@ -29,7 +29,7 @@ allprojects {
   apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
   spotless {
     kotlin {
-      ktfmt().kotlinlangStyle().configure {
+      ktfmt().googleStyle().configure {
         it.setMaxWidth(120)
         it.setBlockIndent(2)
         it.setContinuationIndent(2)
@@ -38,7 +38,7 @@ allprojects {
       }
     }
     kotlinGradle {
-      ktfmt().kotlinlangStyle().configure {
+      ktfmt().googleStyle().configure {
         it.setMaxWidth(120)
         it.setBlockIndent(2)
         it.setContinuationIndent(2)
@@ -56,7 +56,7 @@ subprojects {
     implementation(rootProject.libs.kotlin.logging)
     implementation(rootProject.libs.kotlinx.datetime)
 
-    runtimeOnly(rootProject.libs.log4j2.slf4j2)
+    runtimeOnly(rootProject.libs.bundles.log4j2)
     runtimeOnly(rootProject.libs.sqlite.jdbc)
   }
 

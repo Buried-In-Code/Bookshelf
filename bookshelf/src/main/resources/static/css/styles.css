@@ -8,6 +8,14 @@ body > footer {
   margin-top: auto;
 }
 
+.avatar-large {
+  object-fit: cover;
+  object-position: top;
+  width: 128px;
+  height: 128px;
+  border-radius: 8px;
+}
+
 .avatar {
   object-fit: cover;
   object-position: top;
@@ -27,8 +35,8 @@ body > footer {
 .cover-small {
   object-fit: cover;
   object-position: center;
-  width: 160px;
-  height: 240px;
+  width: 240px;
+  height: 360px;
   border-radius: 8px;
 }
 

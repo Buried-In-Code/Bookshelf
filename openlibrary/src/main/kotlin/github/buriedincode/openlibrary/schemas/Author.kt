@@ -37,6 +37,7 @@ data class Author(
   @Serializable
   data class RemoteIds(
     val amazon: String? = null,
+    val bookbrainz: String? = null,
     val goodreads: String? = null,
     val isni: String? = null,
     val librarything: String? = null,

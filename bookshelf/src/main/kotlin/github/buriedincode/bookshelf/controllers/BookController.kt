@@ -2,13 +2,12 @@ package github.buriedincode.bookshelf.controllers
 
 import github.buriedincode.bookshelf.Utils
 import github.buriedincode.bookshelf.Utils.transaction
-import github.buriedincode.bookshelf.models.Book
-import github.buriedincode.bookshelf.models.Collected
-import github.buriedincode.bookshelf.models.CollectedTable
-import github.buriedincode.bookshelf.models.Read
-import github.buriedincode.bookshelf.models.ReadTable
-import github.buriedincode.bookshelf.models.Wished
-import github.buriedincode.bookshelf.models.WishedTable
+import github.buriedincode.bookshelf.controllers.AuthenticationController.getSession
+import github.buriedincode.bookshelf.database.Book
+import github.buriedincode.bookshelf.database.Read
+import github.buriedincode.bookshelf.database.ReadTable
+import github.buriedincode.bookshelf.database.Wished
+import github.buriedincode.bookshelf.database.WishedTable
 import github.buriedincode.openlibrary.ServiceException
 import github.buriedincode.openlibrary.schemas.Edition
 import github.buriedincode.openlibrary.schemas.id
@@ -27,10 +26,30 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.v1.core.dao.id.CompositeID
 
-object BookController : StringController<Book>(entity = Book) {
+object BookController {
   @JvmStatic private val LOGGER = KotlinLogging.logger {}
 
-  override fun listPage(ctx: Context) = transaction {
+  private fun Context.getResource(): Book {
+    return this.pathParam("book-id").let { Book.findById(id = it) ?: throw NotFoundResponse("Book not found.") }
+      ?: throw BadRequestResponse("Bad book id")
+  }
+
+  private fun render(ctx: Context, template: String, model: Map<String, Any?> = emptyMap()) {
+    val session = ctx.getSession()
+    if (session == null) {
+      ctx.redirect("/")
+    } else {
+      ctx.render("templates/book/$template.kte", mapOf<String, Any?>("session" to session) + model)
+    }
+  }
+
+  private fun isIsbn(query: String): Boolean {
+    val normalized = query.replace("-", "").replace(" ", "")
+    val isbnRegex = Regex("""^(?:\d{9}[0-9Xx]|\d{13})$""")
+    return isbnRegex.matches(normalized)
+  }
+
+  fun listBooksPage(ctx: Context) = transaction {
     val session = ctx.getSession()
     if (session == null) {
       ctx.redirect("/")
@@ -38,27 +57,32 @@ object BookController : StringController<Book>(entity = Book) {
     }
     val query = ctx.queryParam("q")
     val results =
-      try {
-        if (query != null && query.startsWith("OL")) {
-          val edition = Utils.openLibrary.getEdition(id = query)
-          listOf(BookResult(edition = edition, isLocal = Book.findById(id = edition.id) != null))
-        } else {
-          (query?.let { Utils.openLibrary.searchWork(params = mapOf("title" to query)) } ?: emptyList()).mapNotNull {
-            it.coverEditionKey?.split("/")?.last()?.let { editionId ->
-              val edition = Utils.openLibrary.getEdition(id = editionId)
-              BookResult(edition = edition, isLocal = Book.findById(id = edition.id) != null)
+      query?.let {
+        try {
+          if (it.startsWith("OL")) {
+            val edition = Utils.openLibrary.getEdition(id = it)
+            listOf(BookResult(edition = edition, isLocal = Book.findById(id = edition.id) != null))
+          } else if (isIsbn(it)) {
+            val edition = Utils.openLibrary.getEditionByISBN(isbn = it.replace("-", "").replace(" ", ""))
+            listOf(BookResult(edition = edition, isLocal = Book.findById(id = edition.id) != null))
+          } else {
+            Utils.openLibrary.searchWork(params = mapOf("title" to it)).mapNotNull {
+              it.coverEditionKey?.split("/")?.last()?.let { editionId ->
+                val edition = Utils.openLibrary.getEdition(id = editionId)
+                BookResult(edition = edition, isLocal = Book.findById(id = edition.id) != null)
+              }
             }
           }
+        } catch (se: ServiceException) {
+          LOGGER.error(se) { "Error fetching book results for query: $query" }
+          emptyList()
         }
-      } catch (se: ServiceException) {
-        LOGGER.error(se) { "Error fetching book results for query: $query" }
-        emptyList()
-      }
+      } ?: emptyList()
     render(ctx, "list", mapOf("query" to query, "results" to results))
   }
 
   @OptIn(ExperimentalTime::class)
-  override fun readPage(ctx: Context) = transaction {
+  fun viewBookPage(ctx: Context) = transaction {
     val session = ctx.getSession()
     if (session == null) {
       ctx.redirect("/")
@@ -67,12 +91,12 @@ object BookController : StringController<Book>(entity = Book) {
     try {
       ctx.getResource()
     } catch (_: NotFoundResponse) {
-      Book.openLibraryImport(ctx.pathParam(this.paramName))?.let {
+      Book.openLibraryImport(ctx.pathParam("book-id"))?.let {
         it.lastUpdated = Clock.System.now().minus(25, DateTimeUnit.HOUR)
         it
       } ?: throw BadRequestResponse()
     }
-    super.readPage(ctx = ctx)
+    render(ctx = ctx, template = "view", model = mapOf<String, Any?>("resource" to ctx.getResource()))
   }
 
   @OptIn(ExperimentalTime::class)
@@ -89,22 +113,10 @@ object BookController : StringController<Book>(entity = Book) {
     }
   }
 
-  @OptIn(ExperimentalTime::class)
   fun toggleCollected(ctx: Context) = transaction {
-    val session = ctx.getSession() ?: throw UnauthorizedResponse()
+    ctx.getSession() ?: throw UnauthorizedResponse()
     val resource = ctx.getResource()
-    val collectedId = CompositeID {
-      it[CollectedTable.bookCol] = resource.id
-      it[CollectedTable.userCol] = session.id
-    }
-    val exists = Collected.findById(collectedId)
-    if (exists == null) {
-      Collected.new(collectedId) {
-        this.date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-      }
-    } else {
-      exists.delete()
-    }
+    resource.isCollected = !resource.isCollected
     ctx.status(status = HttpStatus.NO_CONTENT)
   }
 

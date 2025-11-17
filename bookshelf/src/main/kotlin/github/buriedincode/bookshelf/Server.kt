@@ -6,7 +6,9 @@ import gg.jte.TemplateEngine
 import gg.jte.resolve.DirectoryCodeResolver
 import github.buriedincode.bookshelf.Utils.log
 import github.buriedincode.bookshelf.Utils.toHumanReadable
-import github.buriedincode.bookshelf.controllers.AuthController
+import github.buriedincode.bookshelf.Utils.transaction
+import github.buriedincode.bookshelf.controllers.AuthenticationController
+import github.buriedincode.bookshelf.controllers.AuthenticationController.getSession
 import github.buriedincode.bookshelf.controllers.BookController
 import github.buriedincode.bookshelf.controllers.UserController
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -27,7 +29,7 @@ import org.eclipse.jetty.server.session.DefaultSessionCache
 import org.eclipse.jetty.server.session.FileSessionDataStore
 import org.eclipse.jetty.server.session.SessionHandler
 
-object App {
+object Server {
   @JvmStatic private val LOGGER = KotlinLogging.logger {}
 
   private fun createTemplateEngine(environment: Settings.Environment): TemplateEngine {
@@ -39,26 +41,25 @@ object App {
     }
   }
 
-  private fun fileSessionHandler() =
-    SessionHandler().apply {
+  private fun createSessionHandler(): SessionHandler {
+    return SessionHandler().apply {
       sessionCache =
         DefaultSessionCache(this).apply {
           sessionDataStore =
-            FileSessionDataStore().apply {
-              this.storeDir = (Utils.CACHE_ROOT / "javalin-session-store").toFile().apply { mkdir() }
-            }
+            FileSessionDataStore().apply { storeDir = (Utils.CACHE_ROOT / "session-store").toFile().apply { mkdirs() } }
         }
       httpOnly = true
       isSecureRequestOnly = true
       sameSite = HttpCookie.SameSite.STRICT
     }
+  }
 
   private fun createJavalinApp(renderer: FileRenderer): Javalin {
     return Javalin.create {
       it.fileRenderer(fileRenderer = renderer)
       it.http.prefer405over404 = true
       it.http.defaultContentType = ContentType.JSON
-      it.jetty.modifyServletContextHandler { it.sessionHandler = fileSessionHandler() }
+      it.jetty.modifyServletContextHandler { it.sessionHandler = createSessionHandler() }
       it.requestLogger.http { ctx, ms ->
         val level =
           when {
@@ -75,25 +76,25 @@ object App {
       it.router.treatMultipleSlashesAsSingleSlash = true
       it.router.apiBuilder {
         path("/") {
-          get(AuthController::homePage)
-          post("sign-up", AuthController::signUp)
-          post("sign-in", AuthController::signIn)
-          delete("sign-out", AuthController::signOut)
+          get { ctx ->
+            transaction {
+              ctx.getSession()?.let { ctx.redirect("/users/${it.id.value}") } ?: ctx.render("templates/index.kte")
+            }
+          }
+          post("register", AuthenticationController::register)
+          post("login", AuthenticationController::login)
+          delete("logout", AuthenticationController::logout)
           path("books") {
-            get(BookController::listPage)
-            get("{book-id}", BookController::readPage)
+            get(BookController::listBooksPage)
+            get("{book-id}", BookController::viewBookPage)
           }
           // path("series") {
           //   get(SeriesController::listPage)
           //   get("{series-id}", SeriesController::readPage)
           // }
           path("users") {
-            path("{user-id}") {
-              get(UserController::readPage)
-              get("collection", UserController::collectionPage)
-              get("read-list", UserController::readListPage)
-              get("wish-list", UserController::wishListPage)
-            }
+            get(UserController::listUsersPage)
+            get("{user-id}", UserController::viewUserPage)
           }
         }
         path("api") {
@@ -130,12 +131,10 @@ fun main(@Suppress("UNUSED_PARAMETER") vararg args: String) {
   TimeZone.setDefault(TimeZone.getTimeZone("Pacific/Auckland"))
   println(TimeZone.getDefault())
   println("Bookshelf v$VERSION")
-  println("Kotlin v${KotlinVersion.CURRENT}")
-  println("Java v${System.getProperty("java.version")}")
-  println("Arch: ${System.getProperty("os.arch")}")
+  println("Kotlin v${KotlinVersion.CURRENT}; Java v${System.getProperty("java.version")}")
+  println("${System.getProperty("os.name")} ${System.getProperty("os.arch")}")
 
   val settings = Settings.load()
   println(settings)
-
-  App.start(settings = settings)
+  Server.start(settings = settings)
 }
