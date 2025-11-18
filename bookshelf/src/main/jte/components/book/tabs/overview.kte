@@ -19,10 +19,10 @@
 
 <div class="grid is-col-min-15 is-gap-2">
   <div class="cell is-row-span-2 has-text-centered">
-    <figure class="image is-2by3">
-      <img alt="Cover image" loading="lazy" src="/books/${ resource.id.value }/image"/>
-    </figure>
     <div class="box has-background-text-soft is-shadowless">
+      <figure class="image is-2by3 mb-4">
+        <img alt="Cover image" loading="lazy" src="/books/${ resource.id.value }/image"/>
+      </figure>
       <div class="buttons is-centered">
         <button class="@if(isWished) has-text-success@endif" id="wish-button" onclick="toggleWished()">
           <span class="icon">

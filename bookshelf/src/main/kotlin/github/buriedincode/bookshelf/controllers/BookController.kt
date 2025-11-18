@@ -132,9 +132,11 @@ object BookController {
     ctx.render("components/book/tabs/wishers.kte", mapOf("wishers" to resource.wishers.toList()))
   }
 
-  fun bookImage(ctx: Context): Unit = transaction {
-    ctx.getSession() ?: throw UnauthorizedResponse()
-    val resource = ctx.getResource()
+  fun bookImage(ctx: Context) {
+    val resource = transaction {
+      ctx.getSession() ?: throw UnauthorizedResponse()
+      ctx.getResource()
+    }
     val cachedImage = Utils.CACHE_ROOT / "covers" / "${ resource.id.value }.webp"
     if (!cachedImage.exists()) {
       cachedImage.createParentDirectories()
