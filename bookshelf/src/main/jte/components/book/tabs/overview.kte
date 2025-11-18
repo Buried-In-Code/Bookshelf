@@ -1,0 +1,132 @@
+@import github.buriedincode.bookshelf.Utils.toHumanReadable
+@import github.buriedincode.bookshelf.database.Book
+@import github.buriedincode.bookshelf.database.User
+@import kotlin.time.Clock
+@import kotlin.time.ExperimentalTime
+@import kotlinx.datetime.LocalDate
+@import kotlinx.datetime.TimeZone
+@import kotlinx.datetime.toLocalDateTime
+@import kotlinx.datetime.DateTimeUnit
+@import kotlinx.datetime.minus
+@import kotlinx.datetime.plus
+@param session: User
+@param resource: Book
+
+!{ @OptIn(ExperimentalTime::class) val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date }
+!{ val releaseDate = resource.publishDate ?: today.minus(16, DateTimeUnit.DAY) }
+!{ val isWished = resource.wishers.any { it.user == session } }
+!{ val isRead = resource.readers.any { it.user == session } }
+
+<div class="grid is-col-min-15 is-gap-2">
+  <div class="cell is-row-span-2 has-text-centered">
+    <figure class="image is-2by3">
+      <img alt="Cover image" loading="lazy" src="/books/${ resource.id.value }/image"/>
+    </figure>
+    <div class="box has-background-text-soft is-shadowless">
+      <div class="buttons is-centered">
+        <button class="@if(isWished) has-text-success@endif" id="wish-button" onclick="toggleWished()">
+          <span class="icon">
+            <i class="@if(isWished) fa-solid@else fa-regular@endif fa-star"></i>
+          </span>
+          <span>@if(isWished) Wished@else Wish@endif</span>
+        </button>
+        @if(releaseDate <= today)
+          <button class="@if(resource.isCollected) has-text-success@endif" id="collect-button" onclick="toggleCollected()">
+            <span class="icon">
+              <i class="fa-solid@if(resource.isCollected) fa-box@else fa-box-open@endif"></i>
+            </span>
+            <span>@if(resource.isCollected) Collected@else Collect@endif</span>
+          </button>
+          <button class="@if(isRead) has-text-success@endif" id="read-button" onclick="toggleRead()">
+            <span class="icon">
+              <i class="@if(isRead) fa-solid@else fa-regular@endif fa-bookmark"></i>
+            </span>
+            <span>Read</span>
+          </button>
+        @endif
+      </div>
+    </div>
+  </div>
+  <div class="cell is-row-span-2">
+    <div class="box has-background-text-soft is-shadowless">
+      <h4 class="title is-4">Summary</h4>
+      <p>$unsafe{ resource.summary?.replace("\n", "<br>") ?: "No summary given" }</p>
+    </div>
+  </div>
+  <div class="cell">
+    <div class="box has-background-text-soft is-shadowless">
+      <h4 class="title is-4">Details</h4>
+      <table class="table is-fullwidth has-background-text-soft">
+        <tbody>
+          <tr>
+            <td>Publisher</td>
+            <td>${ resource.publisher }</td>
+          </tr>
+          <tr>
+            <td>Series</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>Format</td>
+            <td>${ resource.format }</td>
+          </tr>
+          <tr>
+            <td>Publish Date</td>
+            <td>
+              <time datetime="${ resource.publishDate?.toString() }">${ resource.publishDate?.toHumanReadable() }</time>
+            </td>
+          </tr>
+          <tr>
+            <td>ISBN</td>
+            <td>${ resource.isbn13 ?: resource.isbn10 ?: "-" }</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="cell">
+    <div class="box has-background-text-soft is-shadowless">
+      <h4 class="title is-4">Identifications</h4>
+      <table class="table is-fullwidth has-background-text-soft">
+        <tbody>
+          <tr>
+            <td>Goodreads</td>
+            @if(resource.goodreadsId == null)
+              <td>-</td>
+            @else
+              <td>
+                <a href="https://goodreads.com/book/show/${ resource.goodreadsId!! }" rel="noopener noreferrer" target="_blank">${ resource.goodreadsId!! }</a>
+              </td>
+            @endif
+          </tr>
+          <tr>
+            <td>Google Books</td>
+            @if(resource.googleBooksId == null)
+              <td>-</td>
+            @else
+              <td>
+                <a href="https://books.google.com/books?id=${ resource.googleBooksId!! }" rel="noopener noreferrer" target="_blank">${ resource.googleBooksId!! }</a>
+              </td>
+            @endif
+          </tr>
+          <tr>
+            <td>LibraryThing</td>
+            @if(resource.libraryThingId == null)
+              <td>-</td>
+            @else
+              <td>
+                <a href="https://librarything.com/work/${ resource.libraryThingId!! }" rel="noopener noreferrer" target="_blank">${ resource.libraryThingId!! }</a>
+              </td>
+            @endif
+          </tr>
+          <tr>
+            <td>OpenLibrary</td>
+            <td>
+              <a href="https://openlibrary.org/edition/${ resource.id.value }" rel="noopener noreferrer" target="_blank">${ resource.id.value }</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

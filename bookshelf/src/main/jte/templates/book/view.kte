@@ -26,6 +26,7 @@
   <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
   <link href="/static/css/bulma-custom.css" rel="stylesheet">
   <link href="/static/css/styles.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js"></script>
 </head>
 <body class="has-navbar-fixed-top">
   @template.components.navbar(session = session)
@@ -38,157 +39,37 @@
       <div class="notification is-info has-text-centered is-hidden" id="loading-notification">Refreshing Details</div>
       <div class="tabs is-boxed">
         <ul>
-          <li class="is-active"><a href="#overview">Overview</a></li>
-          <li><a href="#credits">Credits</a></li>
-          @if(resource.isCollected)
-            <li><a href="#readers">Readers</a></li>
-          @else
-            <li><a href="#wishers">Wishers</a></li>
-          @endif
+          <li class="is-active">
+            <a hx-get="/books/${ resource.id.value }/tabs/overview" hx-target="#tab-content" hx-swap="innerHTML">Overview</a>
+          </li>
+          <li>
+            <a hx-get="/books/${ resource.id.value }/tabs/credits" hx-target="#tab-content" hx-swap="innerHTML">Credits</a>
+          </li>
+          <li>
+            @if(resource.isCollected)
+              <a hx-get="/books/${ resource.id.value }/tabs/readers" hx-target="#tab-content" hx-swap="innerHTML">Readers</a>
+            @else
+              <a hx-get="/books/${ resource.id.value }/tabs/wishers" hx-target="#tab-content" hx-swap="innerHTML">Wishers</a>
+            @endif
+          </li>
         </ul>
       </div>
-      <div id="overview" class="tab-content">
-        <div class="columns">
-          <div class="column is-narrow has-text-centered">
-            <img alt="Cover image" loading="lazy" class="cover" src="${ resource.imageUrl ?: "https://placehold.co/640x960.png" }"/>
-            <div class="box has-background-text-soft is-shadowless">
-              <div class="buttons is-centered">
-                <button class="@if(isWished) has-text-success@endif" id="wish-button" onclick="toggleWished()">
-                  <span class="icon">
-                    <i class="@if(isWished)fa-solid @elsefa-regular @endiffa-star"></i>
-                  </span>
-                  <span>@if(isWished) Wished@else Wish@endif</span>
-                </button>
-                @if(releaseDate <= today)
-                  <button class="@if(resource.isCollected) has-text-success@endif" id="collect-button" onclick="toggleCollected()">
-                    <span class="icon">
-                      <i class="fa-solid@if(resource.isCollected) fa-box@else fa-box-open@endif"></i>
-                    </span>
-                    <span>@if(resource.isCollected) Collected@else Collect@endif</span>
-                  </button>
-                  <button class="@if(isRead) has-text-success@endif" id="read-button" onclick="toggleRead()">
-                    <span class="icon">
-                      <i class="@if(isRead)fa-solid @elsefa-regular @endiffa-bookmark"></i>
-                    </span>
-                    <span>Read</span>
-                  </button>
-                @endif
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <div class="box has-background-text-soft is-shadowless">
-              <h4 class="title is-4">Summary</h4>
-              <p>$unsafe{ resource.summary?.replace("\n", "<br>") ?: "No summary given" }</p>
-            </div>
-          </div>
-          <div class="column is-one-quarter">
-            <div class="box has-background-text-soft is-shadowless">
-              <h4 class="title is-4">Details</h4>
-              <table class="table is-fullwidth has-background-text-soft">
-                <tbody>
-                  <tr>
-                    <td>Publisher</td>
-                    <td>${ resource.publisher }</td>
-                  </tr>
-                  <tr>
-                    <td>Series</td>
-                    <td>-</td>
-                  </tr>
-                  <tr>
-                    <td>Format</td>
-                    <td>${ resource.format }</td>
-                  </tr>
-                  <tr>
-                    <td>Publish Date</td>
-                    <td><time datetime="${ resource.publishDate?.toString() }">${ resource.publishDate?.toHumanReadable() }</time></td>
-                  </tr>
-                  <tr>
-                    <td>ISBN</td>
-                    <td>${ resource.isbn13 ?: resource.isbn10 ?: "-" }</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="box has-background-text-soft is-shadowless">
-              <h4 class="title is-4">Identifications</h4>
-              <table class="table is-fullwidth has-background-text-soft">
-                <tbody>
-                  <tr>
-                    <td>Goodreads</td>
-                    @if(resource.goodreadsId == null)
-                      <td>-</td>
-                    @else
-                      <td><a href="https://goodreads.com/book/show/${ resource.goodreadsId!! }" rel="noopener noreferrer" target="_blank">${ resource.goodreadsId!! }</a></td>
-                    @endif
-                  </tr>
-                  <tr>
-                    <td>Google Books</td>
-                    @if(resource.googleBooksId == null)
-                      <td>-</td>
-                    @else
-                      <td><a href="https://books.google.com/books?id=${ resource.googleBooksId!! }" rel="noopener noreferrer" target="_blank">${ resource.googleBooksId!! }</a></td>
-                    @endif
-                  </tr>
-                  <tr>
-                    <td>LibraryThing</td>
-                    @if(resource.libraryThingId == null)
-                      <td>-</td>
-                    @else
-                      <td><a href="https://librarything.com/work/${ resource.libraryThingId!! }" rel="noopener noreferrer" target="_blank">${ resource.libraryThingId!! }</a></td>
-                    @endif
-                  </tr>
-                  <tr>
-                    <td>OpenLibrary</td>
-                    <td><a href="https://openlibrary.org/edition/${ resource.id.value }" rel="noopener noreferrer" target="_blank">${ resource.id.value }</a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="credits" class="tab-content is-hidden">
-        <div class="columns is-multiline is-mobile">
-          <div class="column">
-            <p class="subtitle has-text-warning">Credits not yet implemented</p>
-          </div>
-        </div>
-      </div>
-      <div id="readers" class="tab-content is-hidden">
-        <div class="columns is-multiline is-mobile">
-          @for(entry in resource.readers)
-            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
-              @template.components.views.user(entry = entry.user, date = entry.date)
-            </div>
-          @else
-            <div class="column">
-              <p class="subtitle">No Readers found.</p>
-            </div>
-          @endfor
-        </div>
-      </div>
-      <div id="wishers" class="tab-content is-hidden">
-        <div class="columns is-multiline is-mobile">
-          @for(entry in resource.wishers)
-            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
-              @template.components.views.user(entry = entry.user, date = entry.date)
-            </div>
-          @else
-            <div class="column">
-              <p class="subtitle">No Wishers found.</p>
-            </div>
-          @endfor
-        </div>
+      <div id="tab-content">
+        @template.components.book.tabs.overview(session = session, resource = resource)
       </div>
     </div>
   </main>
   @template.components.footer()
   <script src="/static/js/scripts.js" type="text/javascript"></script>
   <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
-  <script src="/static/js/bulma-tabs.js" type="text/javascript"></script>
   <script src="/static/js/bulma-theme.js" type="text/javascript"></script>
   <script type="text/javascript">
+    document.addEventListener("htmx:afterRequest", (event) => {
+      if (event.detail && event.detail.elt) {
+        document.querySelectorAll(".tabs ul li").forEach(li => li.classList.remove("is-active"));
+        event.detail.elt.parentElement.classList.add("is-active");
+      }
+    });
     ready(async () => {
       const caller = document.getElementById("loading-notification");
 

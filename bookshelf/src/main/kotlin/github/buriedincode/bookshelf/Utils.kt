@@ -5,6 +5,10 @@ import github.buriedincode.openlibrary.SQLiteCache
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.Level
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.sql.Connection
@@ -15,9 +19,11 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 import kotlin.io.path.exists
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.measureTimedValue
 import kotlin.time.toDuration
+import kotlin.time.toJavaDuration
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import org.jetbrains.exposed.v1.core.DatabaseConfig
@@ -59,6 +65,8 @@ object Utils {
     )
   }
 
+  internal val settings: Settings by lazy { Settings.load() }
+
   val openLibrary: OpenLibrary by lazy {
     OpenLibrary(cache = SQLiteCache(path = this.CACHE_ROOT / "openlibrary.sqlite", expiry = 1))
   }
@@ -92,6 +100,26 @@ object Utils {
       Level.WARN -> this.warn(message)
       Level.ERROR -> this.error(message)
       else -> return
+    }
+  }
+
+  internal fun fetchImage(url: String): ByteArray? {
+    return try {
+      val client =
+        HttpClient.newBuilder()
+          .followRedirects(HttpClient.Redirect.ALWAYS)
+          .connectTimeout(30.seconds.toJavaDuration())
+          .build()
+      val request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build()
+      val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+      if (response.statusCode() == 200) {
+        response.body()
+      } else {
+        null
+      }
+    } catch (exc: Exception) {
+      LOGGER.error(exc) { "Error fetching image from $url" }
+      null
     }
   }
 

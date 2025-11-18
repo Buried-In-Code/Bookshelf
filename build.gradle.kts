@@ -1,3 +1,4 @@
+import com.diffplug.spotless.kotlin.KtfmtStep.TrailingCommaManagementStrategy
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.benmanes.gradle.versions.updates.resolutionstrategy.ComponentSelectionWithCurrent
 
@@ -10,12 +11,6 @@ plugins {
   alias(libs.plugins.versions)
   id("com.github.node-gradle.node") version "7.1.0" apply false
 }
-
-println("Kotlin v${KotlinVersion.CURRENT}")
-
-println("Java v${System.getProperty("java.version")}")
-
-println("Arch: ${System.getProperty("os.arch")}")
 
 allprojects {
   group = "github.buriedincode"
@@ -34,7 +29,7 @@ allprojects {
         it.setBlockIndent(2)
         it.setContinuationIndent(2)
         it.setRemoveUnusedImports(true)
-        it.setManageTrailingCommas(true)
+        it.setTrailingCommaManagementStrategy(TrailingCommaManagementStrategy.COMPLETE)
       }
     }
     kotlinGradle {
@@ -43,7 +38,7 @@ allprojects {
         it.setBlockIndent(2)
         it.setContinuationIndent(2)
         it.setRemoveUnusedImports(true)
-        it.setManageTrailingCommas(true)
+        it.setTrailingCommaManagementStrategy(TrailingCommaManagementStrategy.COMPLETE)
       }
     }
   }

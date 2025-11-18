@@ -11,10 +11,11 @@ dependencies {
   implementation(libs.bundles.jackson)
   implementation(libs.bundles.javalin)
   implementation(libs.bundles.jte)
+  implementation(libs.bundles.scrimage)
   implementation(libs.hoplite.core)
-  implementation("org.springframework.security:spring-security-crypto:6.5.4")
+  implementation("org.springframework.security:spring-security-crypto:7.0.0")
 
-  runtimeOnly("org.bouncycastle:bcprov-jdk18on:1.81")
+  runtimeOnly("org.bouncycastle:bcprov-jdk18on:1.82")
 }
 
 application {

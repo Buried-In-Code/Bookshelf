@@ -44,9 +44,9 @@
           </form>
         </div>
       </nav>
-      <div class="columns is-multiline is-mobile">
+      <div class="grid is-col-min-9 is-gap-2">
         @for(entry in results)
-          <div class="column is-half-mobile is-one-quarter-desktop is-one-fifth-fullhd">
+          <div class="cell has-text-centered">
             <a class="box has-background-text-soft has-text-centered" href="/users/${ entry.id.value }">
               <img loading="lazy" class="avatar-large" src="${ entry.imageUrl ?: "https://placehold.co/256x256.png" }"/>
               <div class="media">
@@ -57,7 +57,7 @@
             </a>
           </div>
         @else
-          <div class="column">
+          <div class="cell">
             <div class="box has-background-text-soft has-text-centered">
               <h5 class="title is-5 has-text-danger">No Users found.</h5>
             </div>

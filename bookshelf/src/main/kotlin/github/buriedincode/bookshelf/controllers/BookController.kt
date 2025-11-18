@@ -1,5 +1,7 @@
 package github.buriedincode.bookshelf.controllers
 
+import com.sksamuel.scrimage.ImmutableImage
+import com.sksamuel.scrimage.webp.WebpWriter
 import github.buriedincode.bookshelf.Utils
 import github.buriedincode.bookshelf.Utils.transaction
 import github.buriedincode.bookshelf.controllers.AuthenticationController.getSession
@@ -18,6 +20,10 @@ import io.javalin.http.HttpStatus
 import io.javalin.http.NotFoundResponse
 import io.javalin.http.UnauthorizedResponse
 import kotlin.collections.emptyList
+import kotlin.io.path.createParentDirectories
+import kotlin.io.path.div
+import kotlin.io.path.exists
+import kotlin.io.path.readBytes
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlinx.datetime.DateTimeUnit
@@ -28,6 +34,7 @@ import org.jetbrains.exposed.v1.core.dao.id.CompositeID
 
 object BookController {
   @JvmStatic private val LOGGER = KotlinLogging.logger {}
+  @JvmStatic private val WRITER = WebpWriter.MAX_LOSSLESS_COMPRESSION
 
   private fun Context.getResource(): Book {
     return this.pathParam("book-id").let { Book.findById(id = it) ?: throw NotFoundResponse("Book not found.") }
@@ -56,6 +63,7 @@ object BookController {
       return@transaction
     }
     val query = ctx.queryParam("q")
+    var errorMessage: String? = null
     val results =
       query?.let {
         try {
@@ -75,10 +83,11 @@ object BookController {
           }
         } catch (se: ServiceException) {
           LOGGER.error(se) { "Error fetching book results for query: $query" }
+          errorMessage = "${se::class.simpleName}: Error fetching book results for query '$query'"
           emptyList()
         }
       } ?: emptyList()
-    render(ctx, "list", mapOf("query" to query, "results" to results))
+    render(ctx, "list", mapOf("query" to query, "results" to results, "errorMessage" to errorMessage))
   }
 
   @OptIn(ExperimentalTime::class)
@@ -97,6 +106,45 @@ object BookController {
       } ?: throw BadRequestResponse()
     }
     render(ctx = ctx, template = "view", model = mapOf<String, Any?>("resource" to ctx.getResource()))
+  }
+
+  fun overviewTabPartial(ctx: Context): Unit = transaction {
+    val session = ctx.getSession() ?: throw UnauthorizedResponse()
+    val resource = ctx.getResource()
+    ctx.render("components/book/tabs/overview.kte", mapOf("session" to session, "resource" to resource))
+  }
+
+  fun creditsTabPartial(ctx: Context): Unit = transaction {
+    ctx.getSession() ?: throw UnauthorizedResponse()
+    ctx.getResource()
+    ctx.render("components/book/tabs/credits.kte")
+  }
+
+  fun readersTabPartial(ctx: Context): Unit = transaction {
+    ctx.getSession() ?: throw UnauthorizedResponse()
+    val resource = ctx.getResource()
+    ctx.render("components/book/tabs/readers.kte", mapOf("readers" to resource.readers.toList()))
+  }
+
+  fun wishersTabPartial(ctx: Context): Unit = transaction {
+    ctx.getSession() ?: throw UnauthorizedResponse()
+    val resource = ctx.getResource()
+    ctx.render("components/book/tabs/wishers.kte", mapOf("wishers" to resource.wishers.toList()))
+  }
+
+  fun bookImage(ctx: Context): Unit = transaction {
+    ctx.getSession() ?: throw UnauthorizedResponse()
+    val resource = ctx.getResource()
+    val cachedImage = Utils.CACHE_ROOT / "covers" / "${ resource.id.value }.webp"
+    if (!cachedImage.exists()) {
+      cachedImage.createParentDirectories()
+      val remoteImage = Utils.fetchImage(resource.imageUrl) ?: throw BadRequestResponse("Unable to fetch image.")
+      var image = ImmutableImage.loader().fromBytes(remoteImage)
+      image = image.cover(640, 960)
+      image.output(WRITER, cachedImage.toFile())
+    }
+    ctx.contentType("image/webp")
+    ctx.result(cachedImage.readBytes())
   }
 
   @OptIn(ExperimentalTime::class)

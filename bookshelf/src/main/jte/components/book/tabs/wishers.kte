@@ -1,0 +1,14 @@
+@import github.buriedincode.bookshelf.database.Wished
+@param wishers: List<Wished>
+
+<div class="grid is-col-min-9 is-gap-2">
+  @for(entry in wishers)
+    <div class="cell">
+      @template.components.user.card(entry = entry.user, date = entry.date)
+    </div>
+  @else
+    <div class="cell">
+      <p class="subtitle">No wishers found.</p>
+    </div>
+  @endfor
+</div>

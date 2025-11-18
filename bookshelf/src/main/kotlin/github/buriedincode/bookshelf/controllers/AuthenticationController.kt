@@ -40,7 +40,7 @@ object AuthenticationController {
           User.findOrNull(username = username)?.let { throw ConflictResponse("User already exists") }
             ?: User.new {
               this.username = username
-              this.password = ENCODER.encode(password)
+              this.password = ENCODER.encode(password) ?: throw IllegalStateException("Unable to encode passw")
             }
         ctx.sessionAttribute("session-id", user.id.value)
       }

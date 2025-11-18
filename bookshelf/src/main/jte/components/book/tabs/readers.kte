@@ -1,0 +1,14 @@
+@import github.buriedincode.bookshelf.database.Read
+@param readers: List<Read>
+
+<div class="grid is-col-min-9 is-gap-2">
+  @for(entry in readers)
+    <div class="cell">
+      @template.components.user.card(entry = entry.user, date = entry.date)
+    </div>
+  @else
+    <div class="cell">
+      <p class="subtitle">No readers found.</p>
+    </div>
+  @endfor
+</div>

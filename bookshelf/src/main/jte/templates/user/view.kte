@@ -51,8 +51,8 @@
             </div>
           </nav>
         </div>
-        <div class="columns is-multiline is-mobile">
-          <div class="column">
+        <div class="grid is-col-min-9 is-gap-2">
+          <div class="cell">
             <p class="subtitle has-text-warning">Up-Next not yet implemented</p>
           </div>
         </div>
@@ -65,13 +65,13 @@
             </p>
           </div>
         </nav>
-        <div class="columns is-multiline is-mobile">
+        <div class="grid is-col-min-9 is-gap-2">
           @for(entry in resource.wished.sortedBy { it.book })
-            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
-              @template.components.views.book(entry = entry.book, user = resource)
+            <div class="cell">
+              @template.components.book.card(entry = entry.book, user = resource)
             </div>
           @else
-            <div class="column">
+            <div class="cell">
               <div class="box has-background-text-soft is-shadowless has-text-centered">
                 <h5 class="title is-5 has-text-danger">No Books.</h5>
               </div>
@@ -87,13 +87,13 @@
             </p>
           </div>
         </nav>
-        <div class="columns is-multiline is-mobile">
+        <div class="grid is-col-min-9 is-gap-2">
           @for(entry in resource.collected.sorted())
-            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
-              @template.components.views.book(entry = entry, user = resource)
+            <div class="cell">
+              @template.components.book.card(entry = entry, user = resource)
             </div>
           @else
-            <div class="column">
+            <div class="cell">
               <div class="box has-background-text-soft is-shadowless has-text-centered">
                 <h5 class="title is-5 has-text-danger">No Books.</h5>
               </div>
@@ -109,13 +109,13 @@
             </p>
           </div>
         </nav>
-        <div class="columns is-multiline is-mobile">
+        <div class="grid is-col-min-9 is-gap-2">
           @for(entry in resource.read.sortedBy { it.date }.reversed())
-            <div class="column is-one-quarter-widescreen is-one-third-tablet is-half-mobile">
-              @template.components.views.book(entry = entry.book, user = resource, date = entry.date)
+            <div class="cell">
+              @template.components.book.card(entry = entry.book, user = resource, date = entry.date)
             </div>
           @else
-            <div class="column">
+            <div class="cell">
               <div class="box has-background-text-soft is-shadowless has-text-centered">
                 <h5 class="title is-5 has-text-danger">No Books.</h5>
               </div>

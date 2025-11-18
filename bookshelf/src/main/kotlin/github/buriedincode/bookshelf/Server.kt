@@ -5,6 +5,7 @@ import gg.jte.ContentType as JteType
 import gg.jte.TemplateEngine
 import gg.jte.resolve.DirectoryCodeResolver
 import github.buriedincode.bookshelf.Utils.log
+import github.buriedincode.bookshelf.Utils.settings
 import github.buriedincode.bookshelf.Utils.toHumanReadable
 import github.buriedincode.bookshelf.Utils.transaction
 import github.buriedincode.bookshelf.controllers.AuthenticationController
@@ -22,7 +23,6 @@ import io.javalin.http.ContentType
 import io.javalin.rendering.FileRenderer
 import io.javalin.rendering.template.JavalinJte
 import java.nio.file.Path
-import java.util.TimeZone
 import kotlin.io.path.div
 import org.eclipse.jetty.http.HttpCookie
 import org.eclipse.jetty.server.session.DefaultSessionCache
@@ -86,7 +86,16 @@ object Server {
           delete("logout", AuthenticationController::logout)
           path("books") {
             get(BookController::listBooksPage)
-            get("{book-id}", BookController::viewBookPage)
+            path("{book-id}") {
+              get(BookController::viewBookPage)
+              get("image", BookController::bookImage)
+              path("tabs") {
+                get("overview", BookController::overviewTabPartial)
+                get("credits", BookController::creditsTabPartial)
+                get("readers", BookController::readersTabPartial)
+                get("wishers", BookController::wishersTabPartial)
+              }
+            }
           }
           // path("series") {
           //   get(SeriesController::listPage)
@@ -127,14 +136,10 @@ object Server {
 }
 
 fun main(@Suppress("UNUSED_PARAMETER") vararg args: String) {
-  println(TimeZone.getDefault())
-  TimeZone.setDefault(TimeZone.getTimeZone("Pacific/Auckland"))
-  println(TimeZone.getDefault())
   println("Bookshelf v$VERSION")
   println("Kotlin v${KotlinVersion.CURRENT}; Java v${System.getProperty("java.version")}")
   println("${System.getProperty("os.name")} ${System.getProperty("os.arch")}")
 
-  val settings = Settings.load()
   println(settings)
   Server.start(settings = settings)
 }

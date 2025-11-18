@@ -19,8 +19,8 @@
 
 <a class="card has-background-text-soft" href="/books/${ entry.id.value }">
   <div class="card-image has-background-text-soft">
-    <figure class="image is2by3">
-      <img alt="Cover image" loading="lazy" src="${ entry.imageUrl }"/>
+    <figure class="image is-2by3">
+      <img alt="Cover image" loading="lazy" src="/books/${ entry.id.value }/image"/>
       @if(date != null)
         <span class="tag is-info" style="position: absolute; left: 0; top: 0;">
           <span class="icon">
