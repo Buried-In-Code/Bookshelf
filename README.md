@@ -2,13 +2,13 @@
 
 # Bookshelf
 
-![Java Version](https://img.shields.io/badge/Temurin-21-green?style=flat-square&logo=eclipse-adoptium)
-![Kotlin Version](https://img.shields.io/badge/Kotlin-2.2-green?style=flat-square&logo=kotlin&logoColor=white)
-[![Version](https://img.shields.io/gitea/v/release/BuriedInCode/Bookshelf?gitea_url=https%3A%2F%2Fcodefloe.com&include_prereleases&label=Version&style=flat-square&logo=forgejo&logoColor=white)](https://codefloe.com/BuriedInCode/Bookshelf/tags)
+![Java Version](https://img.shields.io/badge/Temurin-17-green?style=flat-square&logo=eclipse-adoptium)
+![Kotlin Version](https://img.shields.io/badge/Kotlin-2.3-green?style=flat-square&logo=kotlin&logoColor=white)
+[![Version](https://img.shields.io/gitea/v/release/buriedincode/Bookshelf?gitea_url=https%3A%2F%2Fcodefloe.com&include_prereleases&label=Version&style=flat-square&logo=forgejo&logoColor=white)](https://codefloe.com/buriedincode/Bookshelf/tags)
 
-[![Gradle](https://img.shields.io/badge/Gradle-9.2-informational?style=flat-square&logo=gradle)](https://github.com/gradle/gradle)
-[![Spotless](https://img.shields.io/badge/Spotless-8.0-informational?style=flat-square)](https://github.com/diffplug/spotless)
-[![Javalin](https://img.shields.io/badge/Javalin-6.7-informational?style=flat-square)](https://github.com/javalin/javalin)
+[![Gradle](https://img.shields.io/badge/Gradle-9.5-informational?style=flat-square&logo=gradle)](https://github.com/gradle/gradle)
+[![Spotless](https://img.shields.io/badge/Spotless-8.4-informational?style=flat-square)](https://github.com/diffplug/spotless)
+[![Javalin](https://img.shields.io/badge/Javalin-7.2-informational?style=flat-square)](https://github.com/javalin/javalin)
 [![Bulma](https://img.shields.io/badge/Bulma-1.0-informational?style=flat-square)](https://github.com/jgthms/bulma)
 
 ![Status](https://img.shields.io/badge/Status-Beta-yellowgreen?style=flat-square)
@@ -23,7 +23,7 @@ Tool for tracking books on your bookshelf or books you wish were on it.
 ### via Source
 
 1. Make sure you have a supported version of [Java](https://adoptium.net/temurin/releases/) installed: `java --version`
-2. Clone the repo: `git clone https://codefloe.com/BuriedInCode/Bookshelf.git`
+2. Clone the repo: `git clone https://codefloe.com/buriedincode/Bookshelf.git`
 3. Run using: `./gradlew build run`
 
 ### via Docker-Compose
@@ -35,7 +35,7 @@ Tool for tracking books on your bookshelf or books you wish were on it.
 ```yaml
 services:
   bookshelf:
-    image: 'codefloe.com/BuriedInCode/Bookshelf:latest'
+    image: 'codefloe.com/buriedincode/Bookshelf:latest'
     container_name: 'Bookshelf'
     environment:
       TZ: 'Pacific/Auckland'
