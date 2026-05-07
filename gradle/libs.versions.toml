@@ -1,42 +1,48 @@
-[versions]
-exposed = "0.61.0"
-jackson = "2.19.2"
-javalin = "6.7.0"
-jte = "3.2.1"
-kotlin = "2.2.0"
-
-[plugins]
-jte = { id = "gg.jte.gradle", version.ref = "jte" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-shadow = { id = "com.gradleup.shadow", version = "8.3.8" }
-spotless = { id = "com.diffplug.spotless", version = "7.2.1" }
-versions = { id = "com.github.ben-manes.versions", version = "0.52.0" }
-
-[libraries]
-exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
-exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposed" }
-exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
-exposed-kotlin-datetime = { group = "org.jetbrains.exposed", name = "exposed-kotlin-datetime", version.ref = "exposed" }
-hoplite-core = { group = "com.sksamuel.hoplite", name = "hoplite-core", version = "2.9.0" }
-jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
-jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
-jackson-datatype-jdk8 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jdk8", version.ref = "jackson" }
-jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version.ref = "jackson" }
-javalin-core = { group = "io.javalin", name = "javalin", version.ref = "javalin" }
-javalin-rendering = { group = "io.javalin", name = "javalin-rendering", version.ref = "javalin" }
-jte-core = { group = "gg.jte", name = "jte", version.ref = "jte" }
-jte-kotlin = { group = "gg.jte", name = "jte-kotlin", version.ref = "jte" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version = "5.13.4" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.13.4" }
-kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging", version = "7.0.11" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.7.1" }
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.9.0" }
-log4j2-slf4j2 = { group = "org.apache.logging.log4j", name = "log4j-slf4j2-impl", version = "2.25.1" }
-sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version = "3.50.3.0" }
-
 [bundles]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]
-jackson = ["jackson-databind", "jackson-kotlin", "jackson-datatype-jdk8", "jackson-datatype-jsr310"]
-javalin = ["javalin-core", "javalin-rendering"]
+jackson = ["jackson-databind", "jackson-kotlin"]
+javalin = ["javalin-core", "javalin-jte"]
 jte = ["jte-core", "jte-kotlin"]
+log4j2 = ["log4j2-jcl", "log4j2-slf4j2"]
+scrimage = ["scrimage-core", "scrimage-webp"]
+
+[libraries]
+exposed-core = {module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed"}
+exposed-dao = {module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed"}
+exposed-jdbc = {module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed"}
+exposed-kotlin-datetime = {module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed"}
+hoplite-core = {module = "com.sksamuel.hoplite:hoplite-core", version = "2.9.0"}
+jackson-databind = {module = "tools.jackson.core:jackson-databind", version.ref = "jackson"}
+jackson-kotlin = {module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson"}
+javalin-core = {group = "io.javalin", name = "javalin", version.ref = "javalin"}
+javalin-jte = {group = "io.javalin", name = "javalin-rendering-jte", version.ref = "javalin"}
+jte-core = {module = "gg.jte:jte", version.ref = "jte"}
+jte-kotlin = {module = "gg.jte:jte-kotlin", version.ref = "jte"}
+junit-jupiter = {module = "org.junit.jupiter:junit-jupiter", version.ref = "junit"}
+junit-platform-launcher = {module = "org.junit.platform:junit-platform-launcher", version.ref = "junit"}
+kotlin-logging = {module = "io.github.oshai:kotlin-logging", version = "8.0.02"}
+kotlinx-datetime = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1"}
+kotlinx-serialization = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.11.0"}
+log4j2-jcl = {module = "org.apache.logging.log4j:log4j-jcl", version.ref = "log4j2"}
+log4j2-slf4j2 = {module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j2"}
+scrimage-core = {module = "com.sksamuel.scrimage:scrimage-core", version.ref = "scrimage"}
+scrimage-webp = {module = "com.sksamuel.scrimage:scrimage-webp", version.ref = "scrimage"}
+sqlite-jdbc = {module = "org.xerial:sqlite-jdbc", version = "3.53.1.0"}
+
+[plugins]
+jte = {id = "gg.jte.gradle", version.ref = "jte"}
+kotlin-jvm = {id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin"}
+kotlinx-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
+shadow = {id = "com.gradleup.shadow", version = "9.4.1"}
+spotless = {id = "com.diffplug.spotless", version = "8.4.0"}
+versions = {id = "com.github.ben-manes.versions", version = "0.54.0"}
+
+[versions]
+exposed = "1.2.0"
+jackson = "3.1.3"
+javalin = "7.2.0"
+jte = "3.2.4"
+junit = "6.0.3"
+kotlin = "2.3.21"
+log4j2 = "2.25.4"
+scrimage = "4.5.1"

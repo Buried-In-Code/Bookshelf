@@ -1,0 +1,10 @@
+@import duckpond.buriedincode.database.Series
+@param entry: Series
+
+<a class="box has-background-text-soft has-text-centered" href="/series/${ entry.id.value }" style="width: 250px">
+  <div class="media">
+    <div class="media-content">
+      <p class="title is-6 card-title">${ entry.title }</p>
+    </div>
+  </div>
+</a>

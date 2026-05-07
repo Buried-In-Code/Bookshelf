@@ -1,15 +1,13 @@
-FROM --platform=$BUILDPLATFORM gradle:jdk17 AS builder
+FROM --platform=$BUILDPLATFORM gradle:jdk25 AS builder
 
 WORKDIR /data
 COPY . /data/
 RUN gradle build
 
-
-
-FROM --platform=$TARGETPLATFORM eclipse-temurin:17-jre
+FROM --platform=$TARGETPLATFORM eclipse-temurin:25-jre
 
 WORKDIR /app
-COPY --from=builder /data/app/build/libs/app-0.4.1-all.jar /app/Bookshelf.jar
+COPY --from=builder /data/bookshelf/build/libs/*-all.jar /app/Bookshelf.jar
 ENV XDG_CACHE_HOME=/app/cache \
     XDG_CONFIG_HOME=/app/config \
     XDG_DATA_HOME=/app/data

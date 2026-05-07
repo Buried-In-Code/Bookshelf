@@ -1,0 +1,10 @@
+@import duckpond.buriedincode.database.User
+@param entry: User
+
+<a class="box has-background-text-soft has-text-centered" href="/users/${ entry.id.value }" style="width: 150px">
+  <div class="media">
+    <div class="media-content">
+      <p class="title is-6 card-title">${ entry.username }</p>
+    </div>
+  </div>
+</a>

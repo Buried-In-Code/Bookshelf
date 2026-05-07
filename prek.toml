@@ -1,0 +1,57 @@
+[[repos]]
+hooks = [
+  {args = ["--allow-multiple-documents"], id = "check-yaml"},
+  {args = ["--assume-in-merge"], id = "check-merge-conflict"},
+  {args = ["--markdown-linebreak-ext=md"], exclude_types = ["svg"], id = "trailing-whitespace"},
+  {exclude_types = ["json", "svg", "xml"], id = "end-of-file-fixer"},
+  {id = "check-added-large-files"},
+  {id = "check-case-conflict"},
+  {id = "check-executables-have-shebangs"},
+  {id = "check-json"},
+  {id = "check-json5"},
+  {id = "check-symlinks"},
+  {id = "check-toml"},
+  {id = "check-xml"},
+  {id = "detect-private-key"},
+  {id = "fix-byte-order-marker"},
+  {id = "mixed-line-ending"},
+]
+repo = "builtin"
+
+[[repos]]
+hooks = [
+  {args = ["--autofix", "--indent=2"], id = "pretty-format-json"},
+  {id = "check-ast"},
+  {id = "check-builtin-literals"},
+  {id = "check-docstring-first"},
+  {id = "check-illegal-windows-names"},
+  {id = "check-merge-conflict"},
+  {id = "check-shebang-scripts-are-executable"},
+  {id = "check-vcs-permalinks"},
+  {id = "debug-statements"},
+  {id = "forbid-submodules"},
+  {id = "name-tests-test"},
+]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+
+[[repos]]
+hooks = [
+  {args = ["--all", "--ignore-case", "--in-place", "--trailing-comma-inline-array"], id = "toml-sort"},
+]
+repo = "https://github.com/pappasam/toml-sort"
+rev = "v0.24.4"
+
+[[repos]]
+hooks = [
+  {additional_dependencies = ["mdformat-gfm", "mdformat-ruff"], args = ["--number", "--wrap=keep"], id = "mdformat"},
+]
+repo = "https://github.com/hukkin/mdformat"
+rev = "1.0.0"
+
+[[repos]]
+hooks = [
+  # {id = "check-hooks-apply"},
+  {id = "check-useless-excludes"},
+]
+repo = "meta"

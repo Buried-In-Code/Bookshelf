@@ -1,0 +1,209 @@
+@import duckpond.buriedincode.Utils.toHumanReadable
+@import duckpond.buriedincode.database.Book
+@import duckpond.buriedincode.database.BookSeries
+@import duckpond.buriedincode.database.User
+@import gg.jte.support.ForSupport
+@param session: User?
+@param users: List<User>
+@param resource: Book
+
+!{ val isWished = session?.wishedBooks?.any { it.book.id.value == resource.id.value } ?: false }
+!{ val readEntry = session?.readBooks?.find { it.book.id.value == resource.id.value } }
+!{ val isCollected = resource.isCollected }
+
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Bookshelf</title>
+  <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
+  <link href="/static/css/bulma-custom.css" rel="stylesheet">
+  <link href="/static/css/styles.css" rel="stylesheet">
+</head>
+<body class="has-navbar-fixed-top">
+  @template.components.navbar(session = session, users = users)
+  <main class="section">
+    <header class="block has-text-centered">
+      <h1 class="title is-1">${ resource.title }</h1>
+    </header>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-one-third-tablet is-one-quarter-fullhd">
+          <figure class="image is-2by3">
+            <img loading="lazy" src="/books/${ resource.id.value }/image"/>
+          </figure>
+          @if(session != null)
+            <div class="box has-background-background is-shadowless">
+              <div class="buttons is-centered">
+                @if(!isCollected)
+                  <button class="button@if(isWished) is-success@else has-text-text-bold@endif is-outlined" onclick="toggleWished(event, this, ${ resource.id.value }, ${ isWished });">
+                    <span class="icon">
+                      <i class="@if(isWished) fa-solid@else fa-regular@endif fa-star"></i>
+                    </span>
+                    @if(isWished)
+                      <span>Unwish</span>
+                    @else
+                      <span>Wish</span>
+                    @endif
+                  </button>
+                @endif
+                <button class="button@if(isCollected) is-success@else has-text-text-bold@endif is-outlined" onclick="toggleCollected(event, this, ${ resource.id.value }, ${ isCollected });">
+                  <span class="icon">
+                    <i class="fa-solid@if(isCollected) fa-box@else fa-box-open@endif"></i>
+                  </span>
+                  @if(isCollected)
+                    <span>Discard</span>
+                  @else
+                    <span>Collect</span>
+                  @endif
+                </button>
+                @if(isCollected)
+                  <button class="button@if(readEntry != null) is-success@else has-text-text-bold@endif is-outlined" onclick="toggleRead(event, this, ${ resource.id.value }, ${ readEntry != null });">
+                    <span class="icon">
+                      <i class="@if(readEntry != null) fa-solid@else fa-regular@endif fa-bookmark"></i>
+                    </span>
+                    @if(readEntry != null)
+                      <span>Unread</span>
+                    @else
+                      <span>Read</span>
+                    @endif
+                  </button>
+                @endif
+              </div>
+              @if(readEntry != null)
+                <div class="box has-text-centered is-shadowless has-background-background m-0 p-0">
+                  <div class="block">
+                    <p><strong>Read On:</strong> ${ readEntry!!.date?.toHumanReadable() ?: "-" }</p>
+                  </div>
+                </div>
+              @endif
+            </div>
+          @endif
+        </div>
+        <div class="column">
+          @if(session != null)
+            <nav class="level is-mobile">
+              <div class="level-left"></div>
+              <div class="level-right">
+                <a href="/books/${ resource.id.value }/edit" class="button is-warning is-outlined">
+                  <span class="icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </span>
+                  <span>Edit</span>
+                </a>
+              </div>
+            </nav>
+          @endif
+          <div class="box has-background-text-soft is-shadowless">
+            <h3 class="title is-3 has-text-centered">Summary</h3>
+            <div class="block">
+              <p>$unsafe{ resource.summary?.replace("\n", "<br />") }</p>
+            </div>
+          </div>
+          <div class="box has-background-text-soft is-shadowless">
+            <div class="block">
+              <p><strong>Authors:</strong> ${ resource.authors.map { it.author.name }.joinToString(", ") }</p>
+            </div>
+            <div class="block">
+              <p><strong>Format:</strong> ${ resource.format ?: "-" }</p>
+            </div>
+            <div class="block">
+              <p><strong>ISBN:</strong> ${ resource.isbn }</p>
+            </div>
+            <div class="block">
+              <p><strong>Publish Date:</strong> ${ resource.publishDate?.toHumanReadable() ?: "-" }</p>
+            </div>
+            <div class="block">
+              <p><strong>Publisher:</strong> ${ resource.publisher ?: "-" }</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      @for(series in resource.series)
+        <nav class="level is-mobile">
+          <div class="level-left has-text-centered">
+            <div>
+              <p class="title mt-3 mb-0">${ series.series.title } Series</p>
+              <p class="heading mt-0">${ series.series.books.count() } Books</p>
+            </div>
+          </div>
+        </nav>
+        <div class="scrolling-wrapper">
+          <div class="auto-grid">
+            @for(entry in series.series.books.sortedWith(compareBy<BookSeries> ({ it.index.toIntOrNull() ?: Int.MAX_VALUE }, { it.book.title })))
+              @template.components.book.card(entry = entry.book, user = session, extras = "Book #${ entry.index ?: "-" }")
+            @else
+              <div class="box has-background-text-soft is-shadowless has-text-centered" style="width: 100%">
+                <h5 class="title is-5 has-text-danger">No Books in Series</h5>
+              </div>
+            @endfor
+          </div>
+        </div>
+      @endfor
+    </div>
+  </main>
+  @template.components.footer()
+  <script src="/static/js/scripts.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-theme.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    async function toggleWished(event, caller, id, currentState) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const nextState = !currentState;
+      const payload = {"wish": nextState};
+      if (nextState) {
+        payload.collect = false;
+        payload.read = false;
+      }
+      @raw
+        const response = await submitRequest(`/api/books/${id}`, "POST", payload);
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleCollected(event, caller, id, currentState) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const nextState = !currentState;
+      const payload = {"collect": nextState};
+      if (nextState) {
+        payload.wish = false;
+      } else {
+        payload.read = false;
+      }
+      @raw
+        const response = await submitRequest(`/api/books/${id}`, "POST", payload);
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleRead(event, caller, id, currentState) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const nextState = !currentState;
+      const payload = {"read": nextState};
+      if (nextState) {
+        payload.collect = true;
+        payload.wish = false;
+        payload.readDate = "today";
+      }
+      @raw
+        const response = await submitRequest(`/api/books/${id}`, "POST", payload);
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+  </script>
+</body>
+</html>

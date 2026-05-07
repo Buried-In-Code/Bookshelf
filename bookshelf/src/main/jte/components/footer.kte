@@ -1,0 +1,59 @@
+<footer class="footer">
+  <div class="columns">
+    <div class="column">
+      <h3 class="title is-3">Contact</h3>
+      <div class="block">
+        <a href="mailto:BuriedInCode@tuta.io" rel="noopener noreferrer" target="_blank">
+          <span class="icon">
+            <i class="fa-solid fa-inbox"></i>
+          </span>
+          <span>Email</span>
+        </a>
+      </div>
+      <div class="block">
+        <a href="https://codefloe.com/Buried-In-Code/Bookshelf" rel="noopener noreferrer" target="_blank">
+          <span class="icon">
+            <i class="fa-brands fa-git-alt"></i>
+          </span>
+          <span>Github</span>
+        </a>
+      </div>
+      <div class="block">
+        <a href="https://fosstodon.org/@BuriedInCode" rel="noopener noreferrer" target="_blank">
+          <span class="icon">
+            <i class="fa-brands fa-mastodon"></i>
+          </span>
+          <span>Mastodon</span>
+        </a>
+      </div>
+      <div class="block">
+        <a href="https://matrix.to/#/#The-Dev-Environment:matrix.org" rel="noopener noreferrer" target="_blank">
+          <span class="icon">
+            <i class="fa-solid fa-message"></i>
+          </span>
+          <span>Matrix</span>
+        </a>
+      </div>
+    </div>
+    <div class="column is-narrow">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <label class="label" for="theme-selector">Theme</label>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <div class="select is-narrow">
+                <select id="theme-selector">
+                  <option value="system">System</option>
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

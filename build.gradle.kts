@@ -1,3 +1,5 @@
+import com.diffplug.spotless.kotlin.KtfmtStep.TrailingCommaManagementStrategy
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.benmanes.gradle.versions.updates.resolutionstrategy.ComponentSelectionWithCurrent
 
 plugins {
@@ -9,15 +11,9 @@ plugins {
   alias(libs.plugins.versions)
 }
 
-println("Kotlin v${KotlinVersion.CURRENT}")
-
-println("Java v${System.getProperty("java.version")}")
-
-println("Arch: ${System.getProperty("os.arch")}")
-
 allprojects {
-  group = "github.buriedincode"
-  version = "0.5.0"
+  group = "duckpond.buriedincode"
+  version = "2026.1.0"
 
   repositories {
     mavenLocal()
@@ -27,21 +23,21 @@ allprojects {
   apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
   spotless {
     kotlin {
-      ktfmt().kotlinlangStyle().configure {
+      ktfmt().googleStyle().configure {
         it.setMaxWidth(120)
         it.setBlockIndent(2)
         it.setContinuationIndent(2)
         it.setRemoveUnusedImports(true)
-        it.setManageTrailingCommas(true)
+        it.setTrailingCommaManagementStrategy(TrailingCommaManagementStrategy.COMPLETE)
       }
     }
     kotlinGradle {
-      ktfmt().kotlinlangStyle().configure {
+      ktfmt().googleStyle().configure {
         it.setMaxWidth(120)
         it.setBlockIndent(2)
         it.setContinuationIndent(2)
         it.setRemoveUnusedImports(true)
-        it.setManageTrailingCommas(true)
+        it.setTrailingCommaManagementStrategy(TrailingCommaManagementStrategy.COMPLETE)
       }
     }
   }
@@ -54,13 +50,13 @@ subprojects {
     implementation(rootProject.libs.kotlin.logging)
     implementation(rootProject.libs.kotlinx.datetime)
 
-    runtimeOnly(rootProject.libs.log4j2.slf4j2)
+    runtimeOnly(rootProject.libs.bundles.log4j2)
     runtimeOnly(rootProject.libs.sqlite.jdbc)
   }
 
-  kotlin { jvmToolchain(21) }
+  kotlin { jvmToolchain(17) }
 
-  java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+  java { toolchain { languageVersion = JavaLanguageVersion.of(17) } }
 }
 
 fun isNonStable(version: String): Boolean {
@@ -70,7 +66,7 @@ fun isNonStable(version: String): Boolean {
   return isStable.not()
 }
 
-tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+tasks.withType<DependencyUpdatesTask> {
   gradleReleaseChannel = "current"
   checkForGradleUpdate = true
   checkConstraints = false

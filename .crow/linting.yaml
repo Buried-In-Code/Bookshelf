@@ -1,0 +1,18 @@
+when:
+  - event: push
+    branch: main
+  - event: pull_request
+    branch: main
+
+steps:
+  spotless:
+    commands:
+      - gradle spotlessCheck
+    depends_on: []
+    image: "cr.codefloe.com/docker.io/gradle:9.5.0-jdk25"
+
+  prek:
+    commands:
+      - uv run --with prek prek run -a
+    depends_on: []
+    image: "cr.codefloe.com/ghcr.io/astral-sh/uv:python3.14-trixie"

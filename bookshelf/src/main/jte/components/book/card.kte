@@ -1,0 +1,67 @@
+@import duckpond.buriedincode.Utils.toHumanReadable
+@import duckpond.buriedincode.database.Book
+@import duckpond.buriedincode.database.User
+@import kotlinx.datetime.TimeZone
+@import kotlinx.datetime.minus
+@import kotlinx.datetime.toLocalDateTime
+@import kotlinx.datetime.DateTimeUnit
+@import kotlin.time.Clock
+@import kotlin.time.ExperimentalTime
+@param entry: Book
+@param user: User?
+@param extras: String? = null
+
+!{ @OptIn(ExperimentalTime::class) val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date }
+!{ val releaseDate = entry.publishDate ?: today.minus(15, DateTimeUnit.DAY) }
+!{ val isReleased = releaseDate <= today }
+!{ val isWished = user?.wishedBooks?.any { it.book.id.value == entry.id.value } ?: false }
+!{ val isRead = user?.readBooks?.any { it.book.id.value == entry.id.value } ?: false }
+!{ val readDate = user?.readBooks?.firstOrNull { it.book.id.value == entry.id.value }?.date }
+
+<a class="card has-background-text-soft" href="/books/${ entry.id.value }" style="width: 250px">
+  <div class="card-image">
+    <figure class="image is-2by3">
+      <img class="@if(!isReleased)greyscale@endif" loading="lazy" src="/books/${ entry.id.value }/image"/>
+      @if(isRead)
+        @if(readDate == null)
+          <span class="tag is-primary" style="position: absolute; left: 0; top: 0;">Read</span>
+        @else
+          <span class="tag is-primary" style="position: absolute; left: 0; top: 0;">${ readDate.toHumanReadable() }</span>
+        @endif
+      @endif
+    </figure>
+  </div>
+  <div class="card-content has-background-text-soft is-flex is-flex-direction-column is-justify-content-space-between">
+    <div class="media">
+      <div class="media-content">
+        <p class="title is-6 card-title">${ entry.title }</p>
+      </div>
+    </div>
+    @if(extras != null)
+      <p class="is-size-7 has-text-centered">${ extras }</p>
+    @endif
+  </div>
+  @if(user != null)
+    <footer class="card-footer has-background-text-soft">
+      @if(!entry.isCollected)
+        <button class="card-footer-item button is-ghost@if(isWished) has-text-success@else has-text-text-bold@endif" onclick="toggleWished(event, this, ${ entry.id.value }, ${ isWished });">
+          <span class="icon">
+            <i class="@if(isWished) fa-solid@else fa-regular@endif fa-star"></i>
+          </span>
+        </button>
+      @endif
+      <button class="card-footer-item button is-ghost@if(entry.isCollected) has-text-success@else has-text-text-bold@endif" onclick="toggleCollected(event, this, ${ entry.id.value }, ${ entry.isCollected });">
+        <span class="icon">
+          <i class="fa-solid@if(entry.isCollected) fa-box@else fa-box-open@endif"></i>
+        </span>
+      </button>
+      @if(entry.isCollected)
+        <button class="card-footer-item button is-ghost@if(isRead) has-text-success@else has-text-text-bold@endif" onclick="toggleRead(event, this, ${ entry.id.value }, ${ isRead });">
+          <span class="icon">
+            <i class="@if(isRead) fa-solid@else fa-regular@endif fa-bookmark"></i>
+          </span>
+        </button>
+      @endif
+    </footer>
+  @endif
+</a>

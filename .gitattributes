@@ -10,6 +10,7 @@
 
 *.jpg      binary
 *.png      binary
+*.webp     binary
 
 *.bash     text eol=lf
 *.bat      text eol=crlf
@@ -31,13 +32,6 @@
 *.tar      binary
 *.tgz      binary
 *.zip      binary
-
-# C#
-*.cs       text diff=csharp
-*.cshtml   text diff=html
-*.csproj   text eol=crlf
-*.csx      text diff=csharp
-*.sln      text eol=crlf
 
 # Java
 *.gradle        text diff=java

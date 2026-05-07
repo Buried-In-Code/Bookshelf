@@ -2,9 +2,14 @@
 .gradle/
 .idea/
 .kotlin/
+.vscode/
+bin/
 build/
 jte-classes/
 logs/
+node_modules/
 
 ### Files ###
 .envrc
+*.sqlite
+!cache.sqlite

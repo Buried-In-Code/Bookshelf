@@ -1,35 +1,29 @@
-<img src="./app/src/main/resources/static/img/logo.png" align="left" width="128" height="128" alt="Bookshelf Logo"/>
+<img src="./bookshelf/src/main/resources/static/img/logo.png" align="left" width="128" height="128" alt="Bookshelf Logo"/>
 
 # Bookshelf
 
-![Java Version](https://img.shields.io/badge/Temurin-20-green?style=flat-square&logo=eclipse-adoptium)
-![Kotlin Version](https://img.shields.io/badge/Kotlin-2.2.0-green?style=flat-square&logo=kotlin)
-![Status](https://img.shields.io/badge/Status-Beta-yellowgreen?style=flat-square)
+![Java Version](https://img.shields.io/badge/Temurin-21-green?style=flat-square&logo=eclipse-adoptium)
+![Kotlin Version](https://img.shields.io/badge/Kotlin-2.2-green?style=flat-square&logo=kotlin&logoColor=white)
+[![Version](https://img.shields.io/gitea/v/release/BuriedInCode/Bookshelf?gitea_url=https%3A%2F%2Fcodefloe.com&include_prereleases&label=Version&style=flat-square&logo=forgejo&logoColor=white)](https://codefloe.com/BuriedInCode/Bookshelf/tags)
 
-[![Gradle](https://img.shields.io/badge/Gradle-9.0-informational?style=flat-square&logo=gradle)](https://github.com/gradle/gradle)
-[![Ktlint](https://img.shields.io/badge/Spotless-7.2-informational?style=flat-square)](https://github.com/diffplug/spotless)
+[![Gradle](https://img.shields.io/badge/Gradle-9.2-informational?style=flat-square&logo=gradle)](https://github.com/gradle/gradle)
+[![Spotless](https://img.shields.io/badge/Spotless-8.0-informational?style=flat-square)](https://github.com/diffplug/spotless)
 [![Javalin](https://img.shields.io/badge/Javalin-6.7-informational?style=flat-square)](https://github.com/javalin/javalin)
 [![Bulma](https://img.shields.io/badge/Bulma-1.0-informational?style=flat-square)](https://github.com/jgthms/bulma)
 
-[![Github - Version](https://img.shields.io/github/v/tag/Buried-In-Code/Bookshelf?logo=Github&label=Version&style=flat-square)](https://github.com/Buried-In-Code/Bookshelf/tags)
-[![Github - License](https://img.shields.io/github/license/Buried-In-Code/Bookshelf?logo=Github&label=License&style=flat-square)](https://opensource.org/licenses/MIT)
-[![Github - Contributors](https://img.shields.io/github/contributors/Buried-In-Code/Bookshelf?logo=Github&label=Contributors&style=flat-square)](https://github.com/Buried-In-Code/Bookshelf/graphs/contributors)
+![Status](https://img.shields.io/badge/Status-Beta-yellowgreen?style=flat-square)
+[![License](https://img.shields.io/badge/License-MIT-informational?style=flat-square)](https://opensource.org/licenses/MIT)
+
+[![Pipeline Status](https://ci.codefloe.com/api/badges/507/status.svg)](https://ci.codefloe.com/repos/507)
 
 Tool for tracking books on your bookshelf or books you wish were on it.
 
 ## Usage
 
-### via Jar
+### via Source
 
 1. Make sure you have a supported version of [Java](https://adoptium.net/temurin/releases/) installed: `java --version`
-2. Clone the repo: `git clone https://github.com/Buried-In-Code/Bookshelf`
-3. Build using: `./gradlew build`
-4. Run using: `java -jar ./app/build/libs/app-0.5.0-all.jar`
-
-### via Gradle
-
-1. Make sure you have a supported version of [Java](https://adoptium.net/temurin/releases/) installed: `java --version`
-2. Clone the repo: `git clone https://github.com/Buried-In-Code/Bookshelf`
+2. Clone the repo: `git clone https://codefloe.com/BuriedInCode/Bookshelf.git`
 3. Run using: `./gradlew build run`
 
 ### via Docker-Compose
@@ -39,11 +33,9 @@ Tool for tracking books on your bookshelf or books you wish were on it.
 3. Create a `docker-compose.yaml` file, _an example:_
 
 ```yaml
-version: '3'
-
 services:
   bookshelf:
-    image: 'ghcr.io/buried-in-code/bookshelf:latest'
+    image: 'codefloe.com/BuriedInCode/Bookshelf:latest'
     container_name: 'Bookshelf'
     environment:
       TZ: 'Pacific/Auckland'

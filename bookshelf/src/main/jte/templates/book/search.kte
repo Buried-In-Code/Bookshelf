@@ -1,0 +1,277 @@
+@import duckpond.buriedincode.bookcatalogue.schemas.ResponseData
+@import duckpond.buriedincode.controllers.SearchResult
+@import duckpond.buriedincode.database.User
+@param session: User?
+@param users: List<User>
+@param query: String? = null
+@param results: List<SearchResult> = emptyList()
+@param errorMessage: String? = null
+
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>Bookshelf</title>
+  <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
+  <link href="/static/css/bulma-custom.css" rel="stylesheet">
+  <link href="/static/css/styles.css" rel="stylesheet">
+</head>
+<body class="has-navbar-fixed-top">
+  @template.components.navbar(session = session, users = users)
+  <main class="section">
+    <header class="block has-text-centered">
+      <h1 class="title is-1">Search for Book</h1>
+    </header>
+    <div class="container">
+      <nav class="level">
+        <div class="level-left">
+          <p class="has-text-centered">
+            <span>${ results.size } Results</span>
+          </p>
+        </div>
+        <div class="level-right">
+          <form accept-charset="UTF-8" method="GET">
+            <div class="field has-addons">
+              <div class="control is-expanded">
+                <input class="input" name="q" placeholder="ISBN" type="text" value="${ query }">
+              </div>
+              <div class="control">
+                <button class="button is-info">
+                  <span class="icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </span>
+                  <span>Search by ISBN</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </nav>
+      <div class="auto-grid is-justify-content-center">
+        @for(entry in results)
+          @if(entry is SearchResult.Local)
+            @template.components.book.card(entry=entry.value, user=session)
+          @elseif(entry is SearchResult.BookCatalogue && entry.value is ResponseData.BookCatalogue)
+            !{ val data = entry.value as ResponseData.BookCatalogue }
+            !{ val book = data.book!! }
+            <div class="card has-background-text-soft" style="width: 250px">
+              <div class="card-image">
+                <figure class="image is-2by3">
+                  <img class="greyscale" loading="lazy" src="${ book.defaultThumbnail }"/>
+                </figure>
+              </div>
+              <div class="card-content has-background-text-soft">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-6 card-title">${ book.title }</p>
+                  </div>
+                </div>
+              </div>
+              @if(session != null)
+                <footer class="card-footer has-background-text-soft">
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToWishlist(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-regular fa-star"></i>
+                    </span>
+                  </button>
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToCollection(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-solid fa-box-open"></i>
+                    </span>
+                  </button>
+                </footer>
+              @endif
+            </div>
+          @elseif(entry is SearchResult.BookCatalogue && entry.value is ResponseData.Google)
+            !{ val data = entry.value as ResponseData.Google }
+            !{ val book = data.book!! }
+            <div class="card has-background-text-soft" style="width: 250px">
+              <div class="card-image">
+                <figure class="image is-2by3">
+                  <img class="greyscale" loading="lazy" src="${ book.defaultThumbnail }"/>
+                </figure>
+              </div>
+              <div class="card-content has-background-text-soft">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-6 card-title">${ book.title }</p>
+                  </div>
+                </div>
+              </div>
+              @if(session != null)
+                <footer class="card-footer has-background-text-soft">
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToWishlist(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-regular fa-star"></i>
+                    </span>
+                  </button>
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToCollection(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-solid fa-box-open"></i>
+                    </span>
+                  </button>
+                </footer>
+              @endif
+            </div>
+          @elseif(entry is SearchResult.BookCatalogue && entry.value is ResponseData.Goodreads)
+            !{ val data = entry.value as ResponseData.Goodreads }
+            !{ val book = data.book!! }
+            <div class="card has-background-text-soft" style="width: 250px">
+              <div class="card-image">
+                <figure class="image is-2by3">
+                  <img class="greyscale" loading="lazy" src="${ book.defaultThumbnail }"/>
+                </figure>
+              </div>
+              <div class="card-content has-background-text-soft">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-6 card-title">${ book.title }</p>
+                  </div>
+                </div>
+              </div>
+              @if(session != null)
+                <footer class="card-footer has-background-text-soft">
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToWishlist(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-regular fa-star"></i>
+                    </span>
+                  </button>
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToCollection(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-solid fa-box-open"></i>
+                    </span>
+                  </button>
+                </footer>
+              @endif
+            </div>
+          @elseif(entry is SearchResult.BookCatalogue && entry.value is ResponseData.OpenLibrary)
+            !{ val data = entry.value as ResponseData.OpenLibrary }
+            !{ val book = data.book!! }
+            <div class="card has-background-text-soft" style="width: 250px">
+              <div class="card-image">
+                <figure class="image is-2by3">
+                  <img class="greyscale" loading="lazy" src="${ book.defaultThumbnail }"/>
+                </figure>
+              </div>
+              <div class="card-content has-background-text-soft">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-6 card-title">${ book.title }</p>
+                  </div>
+                </div>
+              </div>
+              @if(session != null)
+                <footer class="card-footer has-background-text-soft">
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToWishlist(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-regular fa-star"></i>
+                    </span>
+                  </button>
+                  <button class="card-footer-item button is-ghost has-text-text-bold" onclick="addToCollection(event, this, '${ book.isbn }');">
+                    <span class="icon">
+                      <i class="fa-solid fa-box-open"></i>
+                    </span>
+                  </button>
+                </footer>
+              @endif
+            </div>
+          @endif
+        @else
+          @if(errorMessage.isNullOrBlank())
+            <div class="box has-background-text-soft is-shadowless has-text-centered" style="width: 100%">
+              <h5 class="title is-5 has-text-danger">No Books found.</h5>
+            </div>
+          @else
+            <div class="box has-background-text-soft is-shadowless has-text-centered" style="width: 100%">
+              <h5 class="title is-5 has-text-danger">${ errorMessage }</h5>
+            </div>
+          @endif
+        @endfor
+      </div>
+    </div>
+  </main>
+  @template.components.footer()
+  <script src="/static/js/scripts.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
+  <script src="/static/js/bulma-theme.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    async function addToWishlist(event, caller, isbn) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const response = await submitRequest("/api/books", "POST", {"isbn": isbn, "wish": true});
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function addToCollection(event, caller, isbn) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const response = await submitRequest("/api/books", "POST", {"isbn": isbn, "collect": true});
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleWished(event, caller, id, currentState) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const nextState = !currentState;
+      const payload = {"wish": nextState};
+      if (nextState) {
+        payload.collect = false;
+        payload.read = false;
+      }
+      @raw
+        const response = await submitRequest(`/api/books/${id}`, "POST", payload);
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleCollected(event, caller, id, currentState) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const nextState = !currentState;
+      const payload = {"collect": nextState};
+      if (nextState) {
+        payload.wish = false;
+      } else {
+        payload.read = false;
+      }
+      @raw
+        const response = await submitRequest(`/api/books/${id}`, "POST", payload);
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+    async function toggleRead(event, caller, id, currentState) {
+      event.stopPropagation();
+      event.preventDefault();
+      addLoading(caller);
+      const nextState = !currentState;
+      const payload = {"read": nextState};
+      if (nextState) {
+        payload.collect = true;
+        payload.wish = false;
+        payload.readDate = "today";
+      }
+      @raw
+        const response = await submitRequest(`/api/books/${id}`, "POST", payload);
+      @endraw
+      if (response !== null) {
+        window.location.reload();
+      }
+      removeLoading(caller);
+    }
+  </script>
+</body>
+</html>
