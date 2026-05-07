@@ -48,5 +48,7 @@ tasks.shadowJar {
     }
   )
   manifest.attributes["Main-Class"] = "duckpond.buriedincode.BookshelfKt"
+  duplicatesStrategy = DuplicatesStrategy.INCLUDE
   mergeServiceFiles()
+  filesNotMatching("META-INF/services/**") { duplicatesStrategy = DuplicatesStrategy.EXCLUDE }
 }
