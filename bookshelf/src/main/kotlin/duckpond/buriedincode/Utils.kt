@@ -38,7 +38,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 private val LOGGER = KotlinLogging.logger {}
-internal const val VERSION = "2026.1.1"
+internal const val VERSION = "2026.1.2"
 internal const val PROJECT = "Bookshelf"
 
 internal val BOOK_CATALOGUE: BookCatalogue by lazy {
