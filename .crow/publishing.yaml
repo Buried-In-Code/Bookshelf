@@ -3,7 +3,7 @@ when:
 
 steps:
   publish-release:
-    image: "cr.codefloe.com/docker.io/woodpeckerci/plugin-release:0.3.0"
+    image: "cr.codefloe.com/docker.io/woodpeckerci/plugin-release:0.3.1"
     settings:
       api-key:
         from_secret: release-token
@@ -16,7 +16,9 @@ steps:
       repo: codefloe.com/buriedincode/bookshelf
       registry: codefloe.com
       platforms: linux/amd64,linux/arm64
-      auto_tag: true
+      tags:
+        - latest
+        - ${CI_COMMIT_TAG}
       username: BuriedInCode
       password:
         from_secret: docker-token
