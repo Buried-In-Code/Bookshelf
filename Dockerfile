@@ -4,7 +4,7 @@ WORKDIR /data
 COPY . /data/
 RUN gradle build
 
-FROM --platform=$TARGETPLATFORM eclipse-temurin:25-jre
+FROM --platform=$TARGETPLATFORM eclipse-temurin:25.0.3_9-jre
 
 WORKDIR /app
 COPY --from=builder /data/bookshelf/build/libs/*-all.jar /app/Bookshelf.jar
