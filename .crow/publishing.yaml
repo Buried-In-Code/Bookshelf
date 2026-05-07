@@ -20,11 +20,3 @@ steps:
       username: BuriedInCode
       password:
         from_secret: docker-token
-
-  publish-package:
-    commands:
-      - gradle publishAllPublicationsToCodefloeRepository
-    environment:
-      PACKAGE_TOKEN:
-        from_secret: package-token
-    image: "cr.codefloe.com/docker.io/gradle:9.5.0-jdk25"
