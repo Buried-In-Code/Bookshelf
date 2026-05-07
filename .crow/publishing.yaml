@@ -15,7 +15,7 @@ steps:
     settings:
       repo: codefloe.com/buriedincode/bookshelf
       registry: codefloe.com
-      platforms: linux/amd64,linux/arm64,linux/arm/v7
+      platforms: linux/amd64,linux/arm64
       auto_tag: true
       username: BuriedInCode
       password:
