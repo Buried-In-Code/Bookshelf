@@ -1,0 +1,16 @@
+[Container]
+AutoUpdate=registry
+ContainerName=bookshelf
+Environment=TZ=Pacific/Auckland
+Image=codefloe.com/buriedincode/bookshelf:latest
+Network=bookshelf.network
+PublishPort=25710:25710
+Volume=bookshelf.volume:/app/config/bookshelf
+Volume=bookshelf.volume:/app/data/bookshelf
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=60
+
+[Install]
+WantedBy=default.target

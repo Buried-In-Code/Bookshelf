@@ -35,18 +35,32 @@ Tool for tracking books on your bookshelf or books you wish were on it.
 ```yaml
 services:
   bookshelf:
-    image: 'codefloe.com/buriedincode/Bookshelf:latest'
-    container_name: 'Bookshelf'
+    container_name: "Bookshelf"
     environment:
-      TZ: 'Pacific/Auckland'
+      TZ: "Pacific/Auckland"
+    image: "codefloe.com/buriedincode/Bookshelf:latest"
     ports:
-      - '25710:25710'
+      - "25710:25710"
     volumes:
-      - './config:/app/config'
-      - './data:/app/data'
+      - "./config:/app/config"
+      - "./data:/app/data"
 ```
 
 4. Run using: `docker-compose up -d`
+
+### Settings
+
+Example File
+
+```properties
+precompile-jte=true  # set to false for dev
+
+ssl.trust-store=<string>
+ssl.password=<string>
+
+website.host=127.0.0.1 # Often should be set to 0.0.0.0
+website.port=25710
+```
 
 ## Socials
 
