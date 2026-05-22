@@ -131,7 +131,7 @@
         </nav>
         <div class="scrolling-wrapper">
           <div class="auto-grid">
-            @for(entry in series.series.books.sortedWith(compareBy<BookSeries> ({ it.index.toIntOrNull() ?: Int.MAX_VALUE }, { it.book.title })))
+            @for(entry in series.series.books.sortedWith(compareBy<BookSeries> ({ it.index.toIntOrNull() ?: Int.MAX_VALUE }, { it.book.title })).reversed())
               @template.components.book.card(entry = entry.book, user = session, extras = "Book #${ entry.index ?: "-" }")
             @else
               <div class="box has-background-text-soft is-shadowless has-text-centered" style="width: 100%">

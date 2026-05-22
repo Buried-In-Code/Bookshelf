@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -15,7 +16,7 @@ div.scrolling-wrapper {
 
 div.auto-grid {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
 }
 
@@ -32,6 +33,7 @@ div.auto-grid > .box:not(:last-child) {
 div.auto-grid > .card {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
 div.auto-grid > .card .card-content {
@@ -48,6 +50,45 @@ div.auto-grid > .media .card-title {
 }
 
 div.auto-grid > .card .card-footer {
+  margin-top: auto;
+}
+
+div.auto-grid-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+div.auto-grid-wrap > .card,
+div.auto-grid-wrap > .card:not(:last-child) {
+  margin-bottom: 0;
+}
+
+div.auto-grid-wrap > .box,
+div.auto-grid-wrap > .box:not(:last-child) {
+  margin-bottom: 0;
+}
+
+div.auto-grid-wrap > .card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+div.auto-grid-wrap > .card .card-content {
+  flex-grow: 1;
+}
+
+div.auto-grid-wrap > .media .card-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.auto-grid-wrap > .card .card-footer {
   margin-top: auto;
 }
 

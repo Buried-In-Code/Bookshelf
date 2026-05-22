@@ -4,10 +4,11 @@ const HEADERS = {
 };
 
 function ready(callback) {
-  if (document.readyState === "loading")
+  if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", callback);
-  else
+  } else {
     callback();
+  }
 }
 
 function resolveElement(input) {
@@ -45,7 +46,9 @@ async function selectUser() {
   const caller = "user-selector";
   const userId = document.getElementById(caller).value;
   addLoading(caller);
-  const response = await submitRequest("/cookie", "POST", { "userId": userId });
+  const response = await submitRequest("/cookie", "POST", {
+    "userId": userId,
+  });
   if (response !== null) {
     window.location.reload();
   }
@@ -55,23 +58,24 @@ async function selectUser() {
 async function submitRequest(endpoint, method, body = {}, headers = HEADERS) {
   try {
     const options = {
-      method: method,
-      headers: headers,
+      "method": method,
+      "headers": headers,
     };
-    if (method !== "GET")
+    if (method !== "GET") {
       options.body = JSON.stringify(body);
-
+    }
     const response = await fetch(endpoint, options);
-
-    if (!response.ok)
+    if (!response.ok) {
       throw response;
+    }
     const responseBody = response.status !== 204 ? await response.json() : "";
-    return { status: response.status, body: responseBody }
-  } catch(error) {
-    if(typeof error.text === "function")
+    return { status: response.status, body: responseBody };
+  } catch (error) {
+    if (typeof error.text === "function") {
       alert(`${error.status} ${error.statusText}: ${await error.text()}`);
-    else
+    } else {
       alert(error);
+    }
     return null;
   }
 }

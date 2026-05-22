@@ -36,7 +36,7 @@ ______________________________________________________________________
 ## 2. Install quadlets
 
 Quadlet reads `.container`, `.network`, and `.volume` files from
-`~/.config/containers/systemd/` and generates systemd user units automatically.
+`/home/bookshelf/.config/containers/systemd/` and generates systemd user units automatically.
 Copy the quadlet files (found at [repo](https://codefloe.com/buriedincode/Bookshelf/src/branch/main/.podman)) to `/home/bookshelf/.config/containters/systemd`.
 After all the files are copied load the reload the systemd daemon
 
@@ -57,7 +57,7 @@ ______________________________________________________________________
 ### Settings
 
 Before starting the service, create the `settings.properties` file in the volume's config directory.
-First, identify the volume's mount point on the host:
+First, identify the volume's mount point on the host (often found at `/home/bookshelf/.local/share/containers/storage/volumes/bookshelf/_data/`):
 
 ```bash
 podman volume inspect bookshelf --format '{{ .Mountpoint }}'
@@ -94,6 +94,12 @@ Verify the service is running:
 systemctl --user status bookshelf
 podman logs -f bookshelf
 ```
+
+______________________________________________________________________
+
+## 5. First run
+
+By design this doesn't allow user creation, to do that you'll need to access the mounted SQLite data file.
 
 ______________________________________________________________________
 

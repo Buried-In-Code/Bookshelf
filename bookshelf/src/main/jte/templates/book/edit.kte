@@ -79,8 +79,17 @@
                   <div class="column is-half">
                     <div class="field">
                       <label class="label has-text-info-bold" for="readDate">Read Date</label>
-                      <div class="control">
-                        <input class="input" id="readDate" name="readDate" type="date" value="${ readEntry!!.date?.toString() ?: "" }">
+                      <div class="field has-addons">
+                        <div class="control is-expanded">
+                          <input class="input" id="readDate" name="readDate" type="date" value="${ readEntry!!.date?.toString() ?: "" }">
+                        </div>
+                        <div class="control">
+                          <button class="button is-light" onclick="document.getElementById('readDate').value = ''" type="button">
+                            <span class="icon">
+                              <i class="fa-solid fa-xmark"></i>
+                            </span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -116,7 +125,7 @@
             </thead>
             <tbody>
               @for(seriesEntry in resource.series.sortedBy { it.series.title })
-                <tr class="series-row" data-series-id="${ seriesEntry.id.value }">
+                <tr class="series-row" data-series-id="${ seriesEntry.series.id.value }">
                   <td colspan="3">
                     <div class="control">
                       <input class="input" disabled type="text" value="${ seriesEntry.series.title }">
