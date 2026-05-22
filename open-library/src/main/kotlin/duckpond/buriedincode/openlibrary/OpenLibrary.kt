@@ -45,7 +45,7 @@ class OpenLibrary(private val cache: SQLiteCache? = null, timeout: Duration = 30
         HttpRequest.newBuilder()
           .uri(uri)
           .setHeader("Accept", "application/json")
-          .setHeader("User-Agent", "Bookshelf/2026.1.2 ($OS_AGENT; $LANGUAGE_AGENT)")
+          .setHeader("User-Agent", "Bookshelf/2026.2.0 ($OS_AGENT; $LANGUAGE_AGENT)")
           .GET()
           .build()
       val response = this.client.send(request, HttpResponse.BodyHandlers.ofString())
