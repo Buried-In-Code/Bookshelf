@@ -45,7 +45,7 @@
           </form>
         </div>
       </nav>
-      <div class="auto-grid is-justify-content-center">
+      <div class="auto-grid-wrap">
         @for(entry in results.sorted())
           @template.components.user.box(entry = entry)
         @else

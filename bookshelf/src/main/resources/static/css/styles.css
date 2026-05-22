@@ -96,3 +96,27 @@ div.auto-grid-wrap > .card .card-footer {
   -webkit-filter: grayscale(100%);
   filter: grayscale(100%);
 }
+
+/* Book card — fixed width for horizontal scroll strips */
+.book-card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 250px;
+}
+
+/* Read date badge overlaid on cover */
+.book-card-badge {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+}
+
+/* Two-line clamp on card titles */
+.book-card-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}

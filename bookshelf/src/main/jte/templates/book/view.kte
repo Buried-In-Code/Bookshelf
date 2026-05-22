@@ -17,132 +17,178 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <title>Bookshelf</title>
-  <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v7.2.0/css/all.css" rel="stylesheet">
   <link href="/static/css/bulma-custom.css" rel="stylesheet">
   <link href="/static/css/styles.css" rel="stylesheet">
 </head>
 <body class="has-navbar-fixed-top">
   @template.components.navbar(session = session, users = users)
-  <main class="section">
-    <header class="block has-text-centered">
-      <h1 class="title is-1">${ resource.title }</h1>
-    </header>
-    <div class="container">
-      <div class="columns">
-        <div class="column is-one-third-tablet is-one-quarter-fullhd">
-          <figure class="image is-2by3">
-            <img loading="lazy" src="/books/${ resource.id.value }/image"/>
-          </figure>
-          @if(session != null)
-            <div class="box has-background-background is-shadowless">
-              <div class="buttons is-centered">
-                @if(!isCollected)
-                  <button class="button@if(isWished) is-success@else has-text-text-bold@endif is-outlined" onclick="toggleWished(event, this, ${ resource.id.value }, ${ isWished });">
-                    <span class="icon">
-                      <i class="@if(isWished) fa-solid@else fa-regular@endif fa-star"></i>
-                    </span>
-                    @if(isWished)
-                      <span>Unwish</span>
-                    @else
-                      <span>Wish</span>
-                    @endif
-                  </button>
-                @endif
-                <button class="button@if(isCollected) is-success@else has-text-text-bold@endif is-outlined" onclick="toggleCollected(event, this, ${ resource.id.value }, ${ isCollected });">
-                  <span class="icon">
-                    <i class="fa-solid@if(isCollected) fa-box@else fa-box-open@endif"></i>
-                  </span>
-                  @if(isCollected)
-                    <span>Discard</span>
-                  @else
-                    <span>Collect</span>
-                  @endif
-                </button>
-                @if(isCollected)
-                  <button class="button@if(readEntry != null) is-success@else has-text-text-bold@endif is-outlined" onclick="toggleRead(event, this, ${ resource.id.value }, ${ readEntry != null });">
-                    <span class="icon">
-                      <i class="@if(readEntry != null) fa-solid@else fa-regular@endif fa-bookmark"></i>
-                    </span>
-                    @if(readEntry != null)
-                      <span>Unread</span>
-                    @else
-                      <span>Read</span>
-                    @endif
-                  </button>
-                @endif
-              </div>
-              @if(readEntry != null)
-                <div class="box has-text-centered is-shadowless has-background-background m-0 p-0">
-                  <div class="block">
-                    <p><strong>Read On:</strong> ${ readEntry!!.date?.toHumanReadable() ?: "-" }</p>
-                  </div>
-                </div>
-              @endif
-            </div>
+
+  <main>
+    <%-- Hero banner with title --%>
+    <section class="hero is-small has-background-primary-soft has-text-primary-soft-invert">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title is-2">${ resource.title }</h1>
+          @if(!resource.authors.empty())
+            <p class="subtitle is-5">
+              ${ resource.authors.map { it.author.name }.joinToString(" · ") }
+            </p>
           @endif
         </div>
-        <div class="column">
-          @if(session != null)
-            <nav class="level is-mobile">
-              <div class="level-left"></div>
-              <div class="level-right">
-                <a href="/books/${ resource.id.value }/edit" class="button is-warning is-outlined">
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+
+        <%-- Main two-column layout --%>
+        <div class="columns is-variable is-6">
+
+          <%-- Left column: cover + actions --%>
+          <div class="column is-one-third-tablet is-one-quarter-fullhd">
+
+            <%-- Book cover --%>
+            <div class="card mb-4">
+              <div class="card-image">
+                <figure class="image is-2by3">
+                  <img loading="lazy" src="/books/${ resource.id.value }/image" alt="Cover of ${ resource.title }"/>
+                </figure>
+              </div>
+            </div>
+
+            <%-- Action buttons (logged-in users only) --%>
+            @if(session != null)
+              <div class="card">
+                <div class="card-content">
+                  <div class="buttons is-centered">
+                    @if(!isCollected)
+                      <button class="button@if(isWished) is-success@else is-light@endif" onclick="toggleWished(event, this, ${ resource.id.value }, ${ isWished });">
+                        <span class="icon">
+                          <i class="@if(isWished)fa-solid@else fa-regular@endif fa-star"></i>
+                        </span>
+                        <span>@if(isWished)Unwish@else Wish@endif</span>
+                      </button>
+                    @endif
+
+                    <button class="button@if(isCollected) is-success@else is-light@endif" onclick="toggleCollected(event, this, ${ resource.id.value }, ${ isCollected });">
+                      <span class="icon">
+                        <i class="fa-solid @if(isCollected)fa-box@else fa-box-open@endif"></i>
+                      </span>
+                      <span>@if(isCollected)Discard@else Collect@endif</span>
+                    </button>
+
+                    @if(isCollected)
+                      <button class="button@if(readEntry != null) is-success@else is-light@endif" onclick="toggleRead(event, this, ${ resource.id.value }, ${ readEntry != null });">
+                        <span class="icon">
+                          <i class="@if(readEntry != null)fa-solid@else fa-regular@endif fa-bookmark"></i>
+                        </span>
+                        <span>@if(readEntry != null)Unread@else Mark Read@endif</span>
+                      </button>
+                    @endif
+                  </div>
+
+                  @if(readEntry != null)
+                    <hr class="my-3">
+                    <p class="has-text-centered is-size-7">
+                      <span class="has-text-weight-semibold">Read on:</span>
+                      ${ readEntry!!.date?.toHumanReadable() ?: "Date unknown" }
+                    </p>
+                  @endif
+                </div>
+              </div>
+            @endif
+          </div>
+
+          <%-- Right column: details --%>
+          <div class="column">
+
+            <%-- Edit button --%>
+            @if(session != null)
+              <div class="is-flex is-justify-content-flex-end mb-4">
+                <a href="/books/${ resource.id.value }/edit" class="button is-warning is-light">
                   <span class="icon">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </span>
                   <span>Edit</span>
                 </a>
               </div>
-            </nav>
-          @endif
-          <div class="box has-background-text-soft is-shadowless">
-            <h3 class="title is-3 has-text-centered">Summary</h3>
-            <div class="block">
-              <p>$unsafe{ resource.summary?.replace("\n", "<br />") }</p>
-            </div>
-          </div>
-          <div class="box has-background-text-soft is-shadowless">
-            <div class="block">
-              <p><strong>Authors:</strong> ${ resource.authors.map { it.author.name }.joinToString(", ") }</p>
-            </div>
-            <div class="block">
-              <p><strong>Format:</strong> ${ resource.format ?: "-" }</p>
-            </div>
-            <div class="block">
-              <p><strong>ISBN:</strong> ${ resource.isbn }</p>
-            </div>
-            <div class="block">
-              <p><strong>Publish Date:</strong> ${ resource.publishDate?.toHumanReadable() ?: "-" }</p>
-            </div>
-            <div class="block">
-              <p><strong>Publisher:</strong> ${ resource.publisher ?: "-" }</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      @for(series in resource.series)
-        <nav class="level is-mobile">
-          <div class="level-left has-text-centered">
-            <div>
-              <p class="title mt-3 mb-0">${ series.series.title } Series</p>
-              <p class="heading mt-0">${ series.series.books.count() } Books</p>
-            </div>
-          </div>
-        </nav>
-        <div class="scrolling-wrapper">
-          <div class="auto-grid">
-            @for(entry in series.series.books.sortedWith(compareBy<BookSeries> ({ it.index.toIntOrNull() ?: Int.MAX_VALUE }, { it.book.title })).reversed())
-              @template.components.book.card(entry = entry.book, user = session, extras = "Book #${ entry.index ?: "-" }")
-            @else
-              <div class="box has-background-text-soft is-shadowless has-text-centered" style="width: 100%">
-                <h5 class="title is-5 has-text-danger">No Books in Series</h5>
+            @endif
+
+            <%-- Summary --%>
+            @if(resource.summary != null)
+              <div class="card mb-5">
+                <div class="card-header">
+                  <p class="card-header-title">Summary</p>
+                </div>
+                <div class="card-content">
+                  <div class="content">
+                    <p>$unsafe{ resource.summary?.replace("\n", "<br />") }</p>
+                  </div>
+                </div>
               </div>
-            @endfor
+            @endif
+
+            <%-- Book metadata --%>
+            <div class="card">
+              <div class="card-header">
+                <p class="card-header-title">Details</p>
+              </div>
+              <div class="card-content">
+                <table class="table is-fullwidth is-striped">
+                  <tbody>
+                    <tr>
+                      <th class="is-narrow">Authors</th>
+                      <td>${ resource.authors.map { it.author.name }.joinToString(", ").ifEmpty { "—" } }</td>
+                    </tr>
+                    <tr>
+                      <th>Format</th>
+                      <td>${ resource.format ?: "—" }</td>
+                    </tr>
+                    <tr>
+                      <th>ISBN</th>
+                      <td>${ resource.isbn }</td>
+                    </tr>
+                    <tr>
+                      <th>Published</th>
+                      <td>${ resource.publishDate?.toHumanReadable() ?: "—" }</td>
+                    </tr>
+                    <tr>
+                      <th>Publisher</th>
+                      <td>${ resource.publisher ?: "—" }</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-      @endfor
-    </div>
+
+        <%-- Series sections --%>
+        @for(series in resource.series)
+          <div class="mt-6">
+            <div class="is-flex is-align-items-baseline mb-3" style="gap: 0.75rem">
+              <h2 class="title is-4 mb-0">${ series.series.title } Series</h2>
+            </div>
+
+            <div class="scrolling-wrapper pb-3">
+              <div class="auto-grid">
+                @for(entry in series.series.books.sortedWith(compareBy<BookSeries> ({ it.index.toIntOrNull() ?: Int.MAX_VALUE }, { it.book.title })).reversed())
+                  @template.components.book.card(entry = entry.book, user = session, extras = "Book #${ entry.index ?: "—" }")
+                @else
+                  <div class="notification is-warning is-light">
+                    No books in this series yet.
+                  </div>
+                @endfor
+              </div>
+            </div>
+          </div>
+        @endfor
+
+      </div>
+    </section>
   </main>
+
   @template.components.footer()
   <script src="/static/js/scripts.js" type="text/javascript"></script>
   <script src="/static/js/bulma-navbar.js" type="text/javascript"></script>
@@ -153,7 +199,9 @@
       event.preventDefault();
       addLoading(caller);
       const nextState = !currentState;
-      const payload = {"wish": nextState};
+      const payload = {
+        "wish": nextState
+      };
       if (nextState) {
         payload.collect = false;
         payload.read = false;
@@ -166,12 +214,15 @@
       }
       removeLoading(caller);
     }
+
     async function toggleCollected(event, caller, id, currentState) {
       event.stopPropagation();
       event.preventDefault();
       addLoading(caller);
       const nextState = !currentState;
-      const payload = {"collect": nextState};
+      const payload = {
+        "collect": nextState
+      };
       if (nextState) {
         payload.wish = false;
       } else {
@@ -185,12 +236,15 @@
       }
       removeLoading(caller);
     }
+
     async function toggleRead(event, caller, id, currentState) {
       event.stopPropagation();
       event.preventDefault();
       addLoading(caller);
       const nextState = !currentState;
-      const payload = {"read": nextState};
+      const payload = {
+        "read": nextState
+      };
       if (nextState) {
         payload.collect = true;
         payload.wish = false;
