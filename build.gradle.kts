@@ -13,7 +13,7 @@ plugins {
 
 allprojects {
   group = "duckpond.buriedincode"
-  version = "2026.2.0"
+  version = "2026.3.0"
 
   repositories {
     mavenLocal()
